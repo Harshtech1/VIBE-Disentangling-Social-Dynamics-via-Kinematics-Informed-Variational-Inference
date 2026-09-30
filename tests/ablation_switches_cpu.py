@@ -148,10 +148,11 @@ def test_switches(values, baseline):
     handle = global_scene.temporal_encoder.register_forward_pre_hook(capture_neutral_scene)
     assert_valid(run(global_scene, values)); handle.remove()
     assert len(seen_style) == 1 and torch.count_nonzero(seen_style[0]) == 0
-    # The model's existing [B,1] scene-scale × [B,1,1] gamma broadcast is
-    # preserved. With neutral unit scale, the value delivered to AdaLN equals
-    # the original gamma even under that legacy broadcasting convention.
-    assert len(seen_scale) == 1 and torch.all(seen_scale[0] == values["gamma"][0, 0, 0])
+    # V1.1 keeps both scene scale and gamma [B,1,1], so neutral unit scale
+    # must preserve every sample's gamma without cross-sample broadcasting.
+    assert len(seen_scale) == 1
+    assert seen_scale[0].shape == values["gamma"].shape
+    assert torch.equal(seen_scale[0], values["gamma"])
 
     for name, before in initial_masks.items():
         assert torch.equal(values[name], before), f"{name} was mutated"

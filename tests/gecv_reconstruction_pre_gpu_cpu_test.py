@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import sys
+import argparse
 from pathlib import Path
 
 import torch
@@ -52,6 +53,12 @@ def finite(value: torch.Tensor) -> float:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--report", type=Path, default=REPORT_PATH,
+        help="Optional JSON output path; use a temporary path for a non-mutating verification run.",
+    )
+    args = parser.parse_args()
     cfg = yaml.safe_load(CONFIG_PATH.read_text())
     if cfg["enable_sat"] or float(cfg["lambda_sat"]) != 0.0:
         raise AssertionError("Text-off reconstruction config must disable L_sat")
@@ -140,10 +147,10 @@ def main() -> int:
         "remaining_blockers": ["No official paper GECV split is available; this is an explicitly labelled reconstruction split.", "A separate GPU smoke-test authorization is required before GPU work."],
         "gpu_readiness": "READY_FOR_GPU for a separate batch-16 reconstruction smoke test; 24 GB is the recommended first GPU class.",
     }
-    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(json.dumps(report, indent=2) + "\n")
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
-    print(f"Wrote {REPORT_PATH}")
+    print(f"Wrote {args.report}")
     return 0
 
 

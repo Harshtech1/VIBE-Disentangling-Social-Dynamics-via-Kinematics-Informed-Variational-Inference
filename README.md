@@ -1,267 +1,192 @@
-<div align="center">
+# VIBE--GECV reconstruction
 
-# 🎭 VIBE: Disentangling Social Dynamics via Kinematics-Informed Variational Inference for Behavioral Emotion
+This repository contains an audited reconstruction of the GECV component of
+**VIBE: Disentangling Social Dynamics via Kinematics-Informed Variational
+Inference for Behavioral Emotion**. The current scientific reference is
+**VIBE-GECV-RECON-v1.1**, not an exact reproduction of the original published
+benchmark.
 
-[![ICML 2026](https://img.shields.io/badge/ICML-2026-blue?style=for-the-badge&logo=academia&logoColor=white)](https://icml.cc/virtual/2026/poster/62321)
-[![Paper](https://img.shields.io/badge/📄_Paper-arXiv-red?style=for-the-badge)](https://arxiv.org/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org)
+## Project
 
-**VIBE** is a kinematics-aware framework designed for Group Emotion Recognition (GER). Unlike current AI models that act as black boxes and get distracted by background environments, VIBE utilizes causal structuring and mathematical constraints to filter out background noise and isolate the genuine emotions and sociological mechanics of a crowd.
+The reconstruction transforms available GECV video records into fixed-shape
+multimodal HDF5 samples, trains a VIBE-style classifier, selects a checkpoint
+using validation macro-F1 only, and evaluates the selected checkpoint once on
+a frozen held-out test set. All current results, hashes, and limitations are
+recorded in [`reports/final_baseline_v1_1/`](reports/final_baseline_v1_1/).
 
-</div>
+## VIBE paper and GECV scope
 
----
+The original study describes a broader VIBE benchmark. This project reconstructs
+only the available GECV path and explicitly does **not** claim exact paper
+protocol reproduction. In particular, the current corpus/split differ from the
+paper description, text/SAT is disabled, global visual features are stored as a
+pooled scene vector, and participant/session identifiers are unavailable.
 
-## 📰 News
+## Dataset
 
-- 🎉 **[May 2026]** VIBE has been **accepted at ICML 2026**!!
+- Readable raw-video inventory: 408 records.
+- Experimental HDF5 corpus: 404 records; `videoH116` is documented as a
+  tracking failure and three smoke-only records are excluded from the split.
+- Frozen split manifest:
+  [`data/manifests/gecv_reconstruction_v1_split_seed20260928.json`](data/manifests/gecv_reconstruction_v1_split_seed20260928.json)
+- Split seed: `20260928`; train / validation / test = **282 / 61 / 61**.
+- Labels: Positive = 0, Neutral = 1, Negative = 2.
+- Storage contract: physical Kmax = 8, T = 32, feature width = 768.
 
-<!-- - 📄 **[May 2026]** Paper preprint is available on arXiv.
-- 🚀 **[May 2026]** Code and pretrained models are released.  -->
+The split SHA-256 is
+`75691440c5982cc9efa0311c9b8ba68139f318ba82858e42e3cacbd4271ec823`.
+The source-corpus hash is
+`d84c8fed0f72de4b9a485e3502d41c107a2b9c0c89ff000f5b880177448854b9`.
 
----
+## Pipeline
 
-## 🏗️ Architecture
+```text
+raw GECV video
+  -> 6 Hz decoding -> YOLOv8l + ByteTrack -> deterministic K=8 selection
+  -> DINOv2 local features / VideoMAEv2 scene feature / HuBERT audio feature
+  -> T=32 temporal bins + masks + kinematic synchrony gamma
+  -> HDF5 record -> frozen split loader -> dual-stream VIB
+  -> context gate -> visual/audio cross-modal attention
+  -> gamma-gated transformer -> learned-query temporal pooling
+  -> three-class classifier -> validation-selected checkpoint -> held-out test
+```
 
-VIBE is a multimodal, causally-structured framework that processes video, audio, and text through specialized encoders. The architecture is illustrated below:
+[`docs/EXECUTION_FLOW.md`](docs/EXECUTION_FLOW.md) traces the actual functions,
+tensor shapes, configurations, and outputs. [`docs/CODE_MAP.md`](docs/CODE_MAP.md)
+is the quick file-level map.
 
-![VIBE Architecture](images/vibe_arch.jpg)
+## Repository structure
 
-*Overview of the proposed VIBE architecture. The framework processes features from three pre-trained encoders: Global Context (X_glob) via VideoMAE V2, Local Agent Tubes (X_loc) via DINOv2, and Acoustic Prosody (X_aud) via HuBERT. γ denotes the Synchrony Matrix used for dynamic gating, while X_text represents the textual anchor features. The Variational Information Bottleneck (VIB) compresses the representation and filters noise, while L_ortho enforces orthogonality between the environmental (Z_env) and affective (Z_aff) latent spaces to ensure disentanglement.*
+| Path | Role |
+|---|---|
+| `data_preprocessing/` | reconstruction extraction contract and legacy preprocessing |
+| `dataloading/` | HDF5 adapter, masks, and deterministic split resolver |
+| `model/` | VIB, context, attention, gamma-conditioned transformer, classifier |
+| `losses/` | hierarchical classification, KL, orthogonality, optional SAT losses |
+| `trainer/` | training, validation-only selection, provenance, metrics |
+| `testing/` | legacy generic inference/testing interfaces; not the V1.1 authority |
+| `tests/` | CPU smoke, integration, effective-K, ablation-switch, and gamma tests |
+| `config/` | V1.1, historical V1.0, effective-K, and ablation configurations |
+| `scripts/` | extraction, validation/audit, plotting, and report/package utilities |
+| `reports/` | recorded results, audits, final packages, figures, and provenance |
+| `docs/` | data contract, code map, execution flow, supervisor walkthrough |
 
----
+## Main entry points
 
-## ✨ Key Innovations
+- Reconstruction extractor (expensive; do not run unintentionally):
+  `scripts/extract_gecv_reconstruction.py`
+- Active trainer: `trainer/train_model.py`
+- Frozen split resolver: `dataloading/reconstruction_split.py`
+- Dataset adapter: `dataloading/vibe_dataset.py`
+- Current model: `model/vibe_model.py`
+- V1.1 aggregate builder:
+  `scripts/build_gecv_v1_1_baseline_package.py`
+- Read-only dataset audit: `scripts/audit_gecv_dataset_integrity.py`
+- V1.1 gamma regression: `tests/gamma_scene_scale_invariance_cpu.py`
 
-- 🔀 **Causal Disentanglement**: Employs a Dual-Stream Variational Information Bottleneck (VIB) to strictly separate affective signals from environmental confounders.
-- 📐 **Orthogonality Constraint**: Introduces a soft constraint that geometrically forces the "Agent" and "Context" latent spaces to remain disjoint, ensuring the model focuses on agent dynamics rather than background noise.
-- ⚡ **Gamma-Gated Transformer**: Features a Transformer equipped with Decoupled Adaptive Layer Normalization (AdaLN). This modulates neural attention based on a raw physical synchrony metric ($\gamma$), allowing the model to dynamically adapt based on the crowd's physical state.
-- 🔤 **Text-Guided Semantic Alignment**: Projects learned features into a shared embedding space to enforce cosine similarity with pre-trained textual anchors, explicitly grounding abstract visual dynamics in human interpretability.
+`testing/test_model.py` and `testing/inference.py` support an older generic
+interface and do not consume the frozen reconstruction split/model contract.
+They are retained as historical code and must not be used to claim V1.1 test
+metrics. The V1.1 authoritative evaluation is the post-selection test inside
+`VIBETrainer.run()` and the recorded per-seed reports.
 
----
+## Configuration
 
-## 🎞️ Architecture & Modalities
+The active base configuration is
+[`config/train_gecv_reconstruction_v1_1.yaml`](config/train_gecv_reconstruction_v1_1.yaml).
+The seed-specific V1.1 configurations are
+[`config/train_gecv_reconstruction_v1_1_seed20260929.yaml`](config/train_gecv_reconstruction_v1_1_seed20260929.yaml)
+and
+[`config/train_gecv_reconstruction_v1_1_seed20260930.yaml`](config/train_gecv_reconstruction_v1_1_seed20260930.yaml).
 
-VIBE integrates audio, video, and text modalities through specialized pre-trained backbones:
+All three use the same corpus, frozen split, Kmax=8, T=32, input dimension 768,
+latent dimension 512, 8 attention heads, depth 2, dropout 0.3, AdamW,
+`lr=1e-4`, weight decay `1e-3`, 3-epoch warmup/cosine schedule, 30 epochs,
+mixup 0.2, gradient clipping 1.0, and `lambda_ortho=0.1`. Seed-specific files
+change only seed and isolated output locations.
 
-| Modality          | Feature      | Backbone    | Description                                   |
-| ----------------- | ------------ | ----------- | --------------------------------------------- |
-| 🎥 Video (Global) | $X_{glob}$ | VideoMAE V2 | Scene-level dynamics via token sequences      |
-| 👤 Video (Local)  | $X_{loc}$  | DINOv2      | Agent-centric visual tubes per tracked person |
-| 🔊 Audio          | $X_{aud}$  | HuBERT      | Paralinguistic cues (pitch, energy)           |
-| 📝 Text           | $X_{text}$ | RoBERTa     | Crowd-level semantic descriptions             |
+## Training
 
----
-
-## 📊 Performance Benchmarks
-
-VIBE sets a new state-of-the-art for group affect prediction on "in-the-wild" datasets, consistently outperforming prior methods:
-
-|   📁 Dataset   |   🎯 Accuracy   | 📈 F1 Score |
-| :------------: | :--------------: | :---------: |
-| **VGAF** | **70.17%** |    0.701    |
-| **GECV** | **91.85%** |    0.915    |
-
-> 💡 Performance consistently peaks when the model tracks around **8 agents** ($K=8$), effectively capturing the primary affective circle.
-
----
-
-## ⚙️ Implementation Setup
-
-### 🖥️ Hardware Environment
-
-- **GPU**: NVIDIA A2000 (12 GB VRAM)
-- **CPU**: Intel® Xeon® W-2265
-- **RAM**: 64 GB
-
-### 🔧 Training Configuration
-
-| Setting              | Value                |
-| -------------------- | -------------------- |
-| Optimizer            | AdamW                |
-| Weight Decay         | $1 \times 10^{-3}$ |
-| LR Scheduler         | Cosine Annealing     |
-| Batch Size           | 16                   |
-| Initial LR           | $1 \times 10^{-4}$ |
-| Latent Dimension (D) | 512                  |
-| Epochs               | 30                   |
-| Warm-up Period       | 3 epochs             |
-
-### 📦 Data Processing
-
-- 🎞️ Video streams are temporally decimated to **6 Hz**
-- 📍 Raw trajectory coordinates are stabilized with a **Gaussian smoothing kernel** to mitigate detector jitter
-- 🕒 Uniformly sampled at **T = 32 frames** per video clip
-- 👥 Agent processing limit: **K_max = 8** agents per clip
-
----
-
-## 🚀 Quick Start
+Training is not run by any audit or reporting command. The recorded entry point
+is below; use an isolated log/checkpoint/report location for each seed.
 
 ```bash
-# Clone the repository
-git clone https://github.com/aps19/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference.git
-cd VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Inference
-python testing/inference.py --video /your/video.mp4 --config config/inference.yaml
+PYTHONPATH="$PWD" python trainer/train_model.py \
+  --config config/train_gecv_reconstruction_v1_1.yaml \
+  --log-dir logs/gecv_reconstruction_v1_1_seed20260928 \
+  --checkpoint-dir checkpoints/gecv_reconstruction_v1_1_seed20260928 \
+  --run-report reports/robustness/gecv_v1_1_seed20260928_metrics.json
 ```
 
----
+During a run, validation macro-F1 selects `model_best.pth`; after all 30
+epochs, the trainer reloads that checkpoint before evaluating the held-out test
+set. Test metrics do not select checkpoints.
 
----
+## Evaluation
 
-Before training or evaluating the model, the raw datasets must be preprocessed and the underlying primitives (global video frames, local agent tubes, audio, etc.) must be extracted.
+Authoritative V1.1 results are already recorded in
+[`reports/final_baseline_v1_1/gecv_v1_1_three_seed_aggregate.json`](reports/final_baseline_v1_1/gecv_v1_1_three_seed_aggregate.json).
+The three completed seeds use checkpoint epochs 10, 12, and 14. The descriptive
+aggregate is:
 
-## 🛠️ Data Preprocessing
+| Metric | Mean ± sample SD across three seeds |
+|---|---:|
+| Held-out accuracy | 95.08 ± 0.00% |
+| Held-out macro-F1 | 0.937 ± 0.002 |
+| Held-out weighted-F1 | 0.951 ± 0.000 |
 
-**Step 1: Initial Preprocessing**
+These values are measurements on one frozen test split. They are not claims of
+statistical significance, participant-level generalization, or direct
+comparability with the original paper benchmark.
+
+## Tests
+
+Run non-training CPU checks from the repository root:
 
 ```bash
-# Preprocess VGAF Dataset
-python data_preprocessing/preprocessing_vgaf.py
-
-# Preprocess GECV Dataset
-python data_preprocessing/preprocessing_gecv.py
+PYTHONPATH="$PWD" python tests/gamma_scene_scale_invariance_cpu.py
+PYTHONPATH="$PWD" python tests/gecv_reconstruction_cpu_integration.py --report /tmp/gecv_cpu_integration.json
+PYTHONPATH="$PWD" python tests/gecv_reconstruction_pre_gpu_cpu_test.py --report /tmp/gecv_pre_gpu_cpu.json
+PYTHONPATH="$PWD" python tests/gecv_effective_k_cpu_integration.py
+PYTHONPATH="$PWD" python tests/ablation_switches_cpu.py
+PYTHONPATH="$PWD" python scripts/validate_gecv_reconstruction_v1.py --report /tmp/gecv_schema_validation.json
 ```
 
-**Step 2: Extract Primitives**
-
-Once preprocessing is complete, extract the features for your target dataset:
-
-**Extract Primitives for VGAF data:**
-
-```bash
-python data_preprocessing/extract_primitives.py --config config/data_extraction.yaml --dataset vgaf
-```
-
-**Extract Primitives for GECV data:**
-
-```bash
-python data_preprocessing/extract_primitives.py --config config/data_extraction.yaml --dataset gecv
-```
-
-## 🧪 Reproduce Results
-
-```bash
-# Train on VGAF
-python ./trainer/train_model.py --config configs/vgaf_train.yaml
-
-# Evaluate on VGAF
-python ./testing/test_model.py --config configs/vgaf_test.yaml
-```
-
----
-
-## 🌍 Impact
-
-By effectively separating human behavior from the surrounding environment, VIBE mitigates **"shortcut learning"** — preventing models from making biased guesses based on background details. This helps build more **transparent**, **accountable**, and **responsible** AI systems for emotion recognition that are robust across diverse, real-world locations.
-
----
-
-## 📜 Citation
-
-If you find VIBE useful in your research, please cite our work:
-
-```bibtex
-@inproceedings{vibe2026,
-  title     = {VIBE: Disentangling Social Dynamics via Kinematics-Informed
-               Variational Inference for Behavioral Emotion},
-  booktitle = {Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year      = {2026},
-}
-```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-  <sub>Built and Maintained by Abhishek | Accepted at ICML 2026</sub>
-</div>
-
-<!--
-## VIBE: Disentangling Social Dynamics via Kinematics-Informed Variational Inference for Behavioral Emotion 
-
-**VIBE** is a kinematics-aware framework designed for Group Emotion Recognition (GER). Unlike current AI models that act as black boxes and get distracted by background environments , VIBE utilizes causal structuring and mathematical constraints to filter out background noise and isolate the genuine emotions and sociological mechanics of a crowd.
-
----
-
-## Key Innovations
-
-* **Causal Disentanglement**: Employs a Dual-Stream Variational Information Bottleneck (VIB) to strictly separate affective signals from environmental confounders.
-
-
-* **Orthogonality Constraint**: Introduces a soft constraint that geometrically forces the "Agent" and "Context" latent spaces to remain disjoint, ensuring the model focuses on agent dynamics rather than background noise.
-
-
-* **Gamma-Gated Transformer**: Features a Transformer equipped with Decoupled Adaptive Layer Normalization (AdaLN). This modulates neural attention based on a raw physical synchrony metric ($\gamma$), allowing the model to dynamically adapt based on the crowd's physical state.
-
-
-* **Text-Guided Semantic Alignment**: Projects learned features into a shared embedding space to enforce cosine similarity with pre-trained textual anchors, explicitly grounding abstract visual dynamics in human interpretability.
-
-
-
----
-
-## Architecture & Modalities
-
-VIBE integrates audio, video, and text modalities through specialized pre-trained backbones:
-
-* **Global Context ($X_{glob}$)**: Captured using VideoMAE V2 to process scene-level dynamics.
-
-
-* **Local Agent Tubes ($X_{loc}$)**: Visual tubes are extracted for tracked agents and processed via DINOv2 to represent raw actor dynamics.
-
-
-* **Acoustic Prosody ($X_{aud}$)**: Paralinguistic cues (like pitch and energy) are extracted using HuBERT.
-
-
-* **Textual Context ($X_{text}$)**: Crowd-level descriptions are encoded using RoBERTa to serve as linguistic anchors for the semantic alignment objective.
-
-
-
----
-
-## Performance Benchmarks
-
-VIBE sets a new benchmark for group affect prediction, consistently outperforming state-of-the-art methods on "in-the-wild" datasets:
-
-| Dataset | Accuracy | F1 Score |
-| --- | --- | --- |
-| **VGAF** | <br>**70.17%** | 0.701 |
-| **GECV** | <br>**91.85%** | 0.915 |
-
-Performance consistently peaks when the model tracks around 8 agents ($K=8$), effectively capturing the primary affective circle.
-
----
-
-## Implementation Setup
-
-* **Hardware Environment**: Conducted on a workstation equipped with an NVIDIA A2000 GPU (12GB VRAM), an Intel® Xeon® W-2265 CPU, and 64 GB of RAM.
-
-
-* **Optimization**: Trained using the AdamW optimizer with a weight decay of $1\times10^{-3}$ and a Cosine Annealing learning rate scheduler.
-
-
-* **Hyperparameters**: Utilizes a batch size of 16, an initial learning rate of $1\times10^{-4}$, and a latent dimension (D) of 512, trained over 30 epochs.
-
-
-* **Data Processing**: Video streams are temporally decimated to 6 Hz, and raw trajectory coordinates are stabilized using a Gaussian smoothing kernel to mitigate detector jitter.
-
-
-
----
-
-## Impact
-
-By effectively separating human behavior from the surrounding environment, VIBE mitigates "shortcut learning," preventing models from making biased guesses based on background details. This helps build more transparent, accountable, and responsible AI systems for emotion recognition that are robust across diverse, real-world locations.
+The gamma test is a V1.1 regression guard: `gamma` and `scene_scale` are each
+`[B,1,1]`, preventing historical cross-sample broadcasting.
+
+## Known deviations and limitations
+
+- V1.1 corrects a reconstruction implementation-level gamma/scene-scale
+  broadcasting issue. V1.0 is preserved as historical evidence; V1.0 and V1.1
+  results must never be pooled.
+- This is a 404-record reconstruction with a frozen 282/61/61 split, not the
+  paper's exact population or split.
+- Text descriptions, RoBERTa anchors, and SAT are disabled by the approved
+  reconstruction protocol.
+- The global video feature is stored as pooled `global_scene [768]`, rather
+  than a global temporal-token representation.
+- The current KL term uses the affect branch only; this is recorded as a
+  reconstruction fidelity deviation.
+- Participant/session overlap cannot be checked because trustworthy identifiers
+  are not stored.
+- Corrected V1.1 K=3/K=5 and V1.1 ablation training remain future work; K=10
+  requires raw-video re-extraction because physical storage is Kmax=8.
+
+## Reproducibility
+
+Install the declared Python packages with `pip install -r requirements.txt`.
+The GPU extractor additionally requires raw archives, `ffmpeg`, YOLO weights,
+the listed pretrained backbones, and CUDA; it intentionally fails early if
+these prerequisites are absent. Audits/tests use existing HDF5/checkpoint
+artifacts and do not train or re-extract data.
+
+Start with [`docs/SUPERVISOR_CODE_WALKTHROUGH.md`](docs/SUPERVISOR_CODE_WALKTHROUGH.md),
+then inspect the package under
+[`reports/submission/gecv_vibe_final_reconstruction_package/`](reports/submission/gecv_vibe_final_reconstruction_package/).
+
+## Citation
+
+Please cite the VIBE paper and clearly describe this repository as a
+VIBE--GECV reconstruction. The exact protocol, source paths, and limitations
+are documented in the final package and its provenance manifests.

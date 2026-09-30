@@ -1,4 +1,12 @@
-# Canonical VIBE primitive HDF5 contract
+# Legacy generic VIBE primitive HDF5 contract
+
+> **Scope notice:** this document describes the older generic `*_vibe.h5`
+> interface. It is not the active VIBE--GECV--RECON-v1.1 storage authority.
+> The current reconstruction stores `global_scene`, `audio_features`, masks,
+> `synchrony_pair_mask`, and a scalar stored `gamma`; see
+> [`EXECUTION_FLOW.md`](EXECUTION_FLOW.md) and
+> [`CODE_MAP.md`](CODE_MAP.md) for the active path. This legacy contract is
+> retained for its historical code paths and synthetic smoke test.
 
 Each sample is one file named `<clip_id>_vibe.h5` in either `train/` or `val/`.
 The canonical dimensions are `K=8` agents, `T=32` timesteps, and feature dimension

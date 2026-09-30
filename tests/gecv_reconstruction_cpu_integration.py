@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import sys
+import argparse
 from pathlib import Path
 from typing import Any
 
@@ -55,6 +56,12 @@ def model_forward(model: VIBE_Transformer, batch: dict[str, Any]) -> dict[str, t
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--report", type=Path, default=REPORT,
+        help="Optional JSON output path; use a temporary path for a non-mutating verification run.",
+    )
+    args = parser.parse_args()
     # Explicitly CPU-only, even if a researcher happens to run this in a GPU terminal.
     device = torch.device("cpu")
     torch.manual_seed(20260928)
@@ -166,10 +173,10 @@ def main() -> int:
             "Full training/evaluation remains outside this integration gate.",
         ],
     }
-    REPORT.parent.mkdir(parents=True, exist_ok=True)
-    REPORT.write_text(json.dumps(report, indent=2) + "\n")
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
-    print(f"Wrote {REPORT}")
+    print(f"Wrote {args.report}")
     return 0
 
 

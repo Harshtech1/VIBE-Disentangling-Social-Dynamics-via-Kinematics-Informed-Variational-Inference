@@ -26,8 +26,13 @@ env/
 *.tar.xz
 *.tar.gz
 *.mp4
+*.avi
+*.mov
+*.mkv
+*.wav
 *.h5
 *.hdf5
+data/gecv_reconstruction_v1/
 
 # Runtime/cache
 .cache/
@@ -41,4 +46,7 @@ mlruns/
 # Local training outputs and extracted pilot media
 checkpoints/
 logs/
+*.pth
+*.pt
+*.ckpt
 data/phase6_reconstruction_pilot/

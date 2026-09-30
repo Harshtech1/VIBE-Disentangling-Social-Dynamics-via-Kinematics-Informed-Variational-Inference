@@ -114,9 +114,23 @@ def validate_masks(handle: h5py.File, local_key: str, audio_key: str) -> list[st
     return errors
 
 
-def validate_reference_metadata(handle: h5py.File) -> list[str]:
+def validate_reference_metadata(handle: h5py.File, require_reference_valid: bool) -> list[str]:
+    """Validate provenance coordinates for the schema variant being inspected.
+
+    The earlier strict Phase-6 schema includes an explicit ``reference_valid``
+    mask. The production reconstruction extractor records the source frames
+    and timestamps but has no ``reference_valid`` field because its fixed grid
+    is fully defined by the masks used for model inputs. Treating that absent
+    field as corruption made this *validator* reject otherwise valid production
+    files; it does not indicate an HDF5/data change.
+    """
     errors: list[str] = []
-    expected = {"reference_source_frames": ((T,), np.integer), "reference_timestamps": ((T,), np.floating), "reference_valid": ((T,), np.bool_)}
+    expected = {
+        "reference_source_frames": ((T,), np.integer),
+        "reference_timestamps": ((T,), np.floating),
+    }
+    if require_reference_valid:
+        expected["reference_valid"] = ((T,), np.bool_)
     for name, (shape, kind) in expected.items():
         if name not in handle:
             errors.append(f"missing reference metadata {name}")
@@ -128,7 +142,15 @@ def validate_reference_metadata(handle: h5py.File) -> list[str]:
 
 
 def validate_h5(path: Path, expected_class: str) -> dict[str, Any]:
-    result: dict[str, Any] = {"path": str(path), "strict_errors": [], "warnings": [], "physics_sync": None}
+    result: dict[str, Any] = {
+        "path": str(path),
+        # ``strict_errors`` means errors against the accepted schema variant,
+        # not merely differences from the older Phase-6 representation.
+        "strict_errors": [],
+        "strict_schema_deviation": [],
+        "warnings": [],
+        "physics_sync": None,
+    }
     try:
         with h5py.File(path, "r") as handle:
             strict_errors = shape_dtype_errors(handle, STRICT_SCHEMA)
@@ -136,17 +158,23 @@ def validate_h5(path: Path, expected_class: str) -> dict[str, Any]:
             strict = not strict_errors
             alias = not alias_errors
             result["schema_variant"] = "strict_phase6" if strict else ("production_extractor_alias" if alias else "invalid")
-            result["strict_errors"].extend(strict_errors)
             if alias and not strict:
+                # Preserve the legacy difference for forensic review, but do
+                # not call a production record invalid merely because it does
+                # not use fields from the older generic interface.
+                result["strict_schema_deviation"].extend(strict_errors)
                 result["warnings"].append("strict schema deviation: production aliases audio_features/global_scene replace audio_seq/env_feat/global_v_seq")
             active_schema = STRICT_SCHEMA if strict else EXTRACTOR_ALIAS_SCHEMA if alias else None
             if active_schema is None:
+                result["strict_errors"].append("record matches neither the strict Phase-6 nor production extractor schema")
+                result["strict_errors"].extend(f"strict: {error}" for error in strict_errors)
+                result["strict_errors"].extend(f"production alias: {error}" for error in alias_errors)
                 return result
             local_key = "local_features"
             audio_key = "audio_seq" if strict else "audio_features"
             result["strict_errors"].extend(finite_errors(handle))
             result["strict_errors"].extend(validate_masks(handle, local_key, audio_key))
-            result["strict_errors"].extend(validate_reference_metadata(handle))
+            result["strict_errors"].extend(validate_reference_metadata(handle, require_reference_valid=strict))
             sync = handle["physics_sync"][()]
             result["physics_sync"] = {"min": float(sync.min()), "max": float(sync.max()), "mean": float(sync.mean()), "diagonal": np.diag(sync).tolist()}
             if not np.allclose(np.diag(sync), 0.0):
