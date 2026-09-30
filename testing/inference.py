@@ -10,8 +10,8 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 
-from data_preprocessing.preprocessing import VGAFDataPreprocessor, HubertExtractor, IdentityTracker, TubeExtractor
-from data_preprocessing.extract_primitives_from_features import VIBEFeatureEngine
+from data_preprocessing.preprocessing_vgaf import VGAFDataPreprocessor, HubertExtractor, IdentityTracker, TubeExtractor
+from data_preprocessing.extract_primitives import VIBEFeatureEngine
 from model.vibe_model import VIBE_Transformer
 
 class VIBEInferencer:

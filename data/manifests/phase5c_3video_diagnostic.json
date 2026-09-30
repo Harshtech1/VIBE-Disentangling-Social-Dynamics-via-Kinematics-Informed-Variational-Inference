@@ -1,0 +1,1153 @@
+{
+  "started_utc": "2026-09-28T01:03:00Z",
+  "scope": [
+    "videoH001",
+    "videoN001",
+    "videoS001"
+  ],
+  "device": "cuda",
+  "preflight": {
+    "cuda": {
+      "requested_device": "cuda",
+      "available": true,
+      "device_count": 1,
+      "gpu": {
+        "name": "NVIDIA L4",
+        "vram_gb": 22.03
+      }
+    },
+    "lap": {
+      "available": true,
+      "requirement": "lap is required by Ultralytics ByteTrack; this script never invokes Ultralytics automatic installation"
+    },
+    "ffmpeg": "ffmpeg version 8.0.1 Copyright (c) 2000-2025 the FFmpeg developers",
+    "ffprobe": "ffprobe version 8.0.1 Copyright (c) 2007-2025 the FFmpeg developers",
+    "models": {
+      "yolov8l": "/teamspace/studios/this_studio/VIBE_TRANSFER_FROM_FRIEND/code_reference/yolov8l.pt",
+      "dinov2": {
+        "id": "facebook/dinov2-base",
+        "availability": "not found in default local cache; stage may require authorized model download"
+      },
+      "hubert": {
+        "id": "facebook/hubert-base-ls960",
+        "availability": "local-cache candidate"
+      },
+      "videomae": {
+        "id": "MCG-NJU/videomae-base",
+        "status": "BLOCKED scientifically; not called VideoMAE-v2"
+      },
+      "roberta": {
+        "id": "roberta-base",
+        "status": "BLOCKED for GECV without legitimate sample-specific text"
+      }
+    }
+  },
+  "clips": [
+    {
+      "video_id": "videoH001",
+      "class_name": "Positive",
+      "canonical_label": 0,
+      "stages": {
+        "locate": {
+          "started_utc": "2026-09-28T01:03:00Z",
+          "status": "PASS",
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase5c_pilot_media/videoH001.mp4",
+            "bytes": 13434081
+          },
+          "elapsed_seconds": 60.833
+        },
+        "ffprobe": {
+          "started_utc": "2026-09-28T01:04:01Z",
+          "status": "PASS",
+          "result": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "mpeg4",
+                "codec_long_name": "MPEG-4 part 2",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "nb_frames": "263"
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "codec_type": "audio",
+                "sample_rate": "44100",
+                "channels": 2,
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "nb_frames": "381"
+              }
+            ],
+            "format": {
+              "duration": "8.846803",
+              "size": "13434081"
+            }
+          },
+          "elapsed_seconds": 0.063
+        },
+        "decode_and_6hz_sample": {
+          "started_utc": "2026-09-28T01:04:01Z",
+          "status": "PASS",
+          "result": {
+            "policy": "step=max(1, round(source_fps / 6)); retain frames whose zero-based index modulo step is zero",
+            "source_fps": 30.0,
+            "target_fps": 6,
+            "step": 5,
+            "decoded_frame_count": 263,
+            "sampled_frame_count": 53,
+            "first_bgr_shape": [
+              1080,
+              1920,
+              3
+            ]
+          },
+          "elapsed_seconds": 1.197
+        },
+        "yolov8l_bytetrack": {
+          "started_utc": "2026-09-28T01:04:03Z",
+          "status": "PASS",
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              14,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              26,
+              29,
+              31,
+              33,
+              35,
+              36,
+              37
+            ],
+            "track_lengths": {
+              "1": 49,
+              "2": 21,
+              "3": 6,
+              "4": 5,
+              "5": 17,
+              "6": 33,
+              "7": 36,
+              "8": 20,
+              "9": 15,
+              "10": 17,
+              "14": 28,
+              "16": 2,
+              "17": 11,
+              "18": 31,
+              "19": 33,
+              "20": 21,
+              "21": 33,
+              "22": 8,
+              "26": 10,
+              "29": 10,
+              "31": 9,
+              "33": 4,
+              "35": 1,
+              "36": 1,
+              "37": 1
+            },
+            "policy": "YOLOv8-L, ByteTrack, person class 0, conf=0.5"
+          },
+          "elapsed_seconds": 2.64
+        },
+        "trajectory_smoothing": {
+          "started_utc": "2026-09-28T01:04:05Z",
+          "status": "PASS",
+          "result": {
+            "policy": "Gaussian smoothing only for tracks of length >=5; sigma=5/3 on xywh coordinates",
+            "track_lengths": {
+              "1": 49,
+              "2": 21,
+              "3": 6,
+              "4": 5,
+              "5": 17,
+              "6": 33,
+              "7": 36,
+              "8": 20,
+              "9": 15,
+              "10": 17,
+              "14": 28,
+              "16": 2,
+              "17": 11,
+              "18": 31,
+              "19": 33,
+              "20": 21,
+              "21": 33,
+              "22": 8,
+              "26": 10,
+              "29": 10,
+              "31": 9,
+              "33": 4,
+              "35": 1,
+              "36": 1,
+              "37": 1
+            }
+          },
+          "elapsed_seconds": 0.018
+        },
+        "k8_selection": {
+          "started_utc": "2026-09-28T01:04:05Z",
+          "status": "WARNING",
+          "result": {
+            "status": "CUSTOM_RECONSTRUCTION_DEVIATION",
+            "original_policy_status": "No explicit paper/repository K=8 retention ranking was found.",
+            "ranking_rule": "descending observed track length; ties broken by ascending numeric track ID",
+            "observed_track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              14,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              26,
+              29,
+              31,
+              33,
+              35,
+              36,
+              37
+            ],
+            "observed_track_lengths": {
+              "1": 49,
+              "2": 21,
+              "3": 6,
+              "4": 5,
+              "5": 17,
+              "6": 33,
+              "7": 36,
+              "8": 20,
+              "9": 15,
+              "10": 17,
+              "14": 28,
+              "16": 2,
+              "17": 11,
+              "18": 31,
+              "19": 33,
+              "20": 21,
+              "21": 33,
+              "22": 8,
+              "26": 10,
+              "29": 10,
+              "31": 9,
+              "33": 4,
+              "35": 1,
+              "36": 1,
+              "37": 1
+            },
+            "ranked_track_ids": [
+              1,
+              7,
+              6,
+              19,
+              21,
+              18,
+              14,
+              2,
+              20,
+              8,
+              5,
+              10,
+              9,
+              17,
+              26,
+              29,
+              31,
+              22,
+              3,
+              4,
+              33,
+              16,
+              35,
+              36,
+              37
+            ],
+            "selected_track_ids": [
+              1,
+              7,
+              6,
+              19,
+              21,
+              18,
+              14,
+              2
+            ],
+            "selected_count": 8,
+            "representation": "K=8 explicit: selected tracks occupy slots 0..selected_count-1; remaining slots are zero-padded downstream.",
+            "sensitivity_note": "Alternative retention rules (confidence, area, centrality, or tracker order) can change local features and synchrony, so results must be sensitivity-checked."
+          },
+          "elapsed_seconds": 0.0,
+          "reason": "CUSTOM RECONSTRUCTION DEVIATION: the paper/repository does not define this K=8 retention ranking."
+        },
+        "dinov2_person_features": {
+          "started_utc": "2026-09-28T01:04:05Z",
+          "status": "PASS",
+          "result": {
+            "checkpoint": "facebook/dinov2-base",
+            "feature_shape": [
+              264,
+              768
+            ],
+            "per_track_lengths": {
+              "1": 49,
+              "7": 36,
+              "6": 33,
+              "19": 33,
+              "21": 33,
+              "18": 31,
+              "14": 28,
+              "2": 21
+            },
+            "dtype": "float32"
+          },
+          "elapsed_seconds": 6.09
+        },
+        "synchrony": {
+          "started_utc": "2026-09-28T01:04:11Z",
+          "status": "PASS",
+          "result": {
+            "shape": [
+              8,
+              8
+            ],
+            "selected_track_ids": [
+              1,
+              7,
+              6,
+              19,
+              21,
+              18,
+              14,
+              2
+            ],
+            "gamma": -0.031122416257858276,
+            "assumptions": "Only the custom K=8-selected tracks are used. Selected tracks occupy leading matrix rows/columns; zero-padded rows/columns are excluded; diagonal is excluded; pairwise sequences are aligned by truncated observed-order length; no temporal mask is propagated."
+          },
+          "elapsed_seconds": 0.002
+        },
+        "hubert_audio": {
+          "started_utc": "2026-09-28T01:04:11Z",
+          "status": "PASS",
+          "result": {
+            "checkpoint": "facebook/hubert-base-ls960",
+            "decoded_sample_rate": 16000,
+            "mono_samples": 141549,
+            "native_feature_shape": [
+              442,
+              768
+            ],
+            "dtype": "float32",
+            "t32_mapping": "BLOCKED: native HuBERT sequence is reported without truncation, padding, or temporal remapping"
+          },
+          "elapsed_seconds": 2.573
+        },
+        "videomae_contract": {
+          "status": "BLOCKED",
+          "reason": "Current code names MCG-NJU/videomae-base, samples 16 frames, and yields a token sequence; it is not asserted as VideoMAE-v2 and no scientific T=32 mapping is applied.",
+          "elapsed_seconds": 0.0
+        },
+        "text_contract": {
+          "status": "BLOCKED",
+          "result": {
+            "expected_field": "Description (final extractor) / description (raw metadata)",
+            "backbone": "roberta-base",
+            "candidate_metadata": [],
+            "status": "BLOCKED",
+            "reason": "No verified non-empty, clip-aligned GECV description source is available; RoBERTa is not run and text is not fabricated."
+          },
+          "elapsed_seconds": 0.0
+        },
+        "canonical_label": {
+          "status": "PASS",
+          "result": {
+            "mapping": "Positive -> 0"
+          },
+          "elapsed_seconds": 0.0
+        }
+      }
+    },
+    {
+      "video_id": "videoN001",
+      "class_name": "Neutral",
+      "canonical_label": 1,
+      "stages": {
+        "locate": {
+          "started_utc": "2026-09-28T01:04:14Z",
+          "status": "PASS",
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase5c_pilot_media/videoN001.mp4",
+            "bytes": 15878113
+          },
+          "elapsed_seconds": 60.332
+        },
+        "ffprobe": {
+          "started_utc": "2026-09-28T01:05:14Z",
+          "status": "PASS",
+          "result": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "mpeg4",
+                "codec_long_name": "MPEG-4 part 2",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "nb_frames": "318"
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "codec_type": "audio",
+                "sample_rate": "44100",
+                "channels": 2,
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "nb_frames": "460"
+              }
+            ],
+            "format": {
+              "duration": "10.681179",
+              "size": "15878113"
+            }
+          },
+          "elapsed_seconds": 0.07
+        },
+        "decode_and_6hz_sample": {
+          "started_utc": "2026-09-28T01:05:14Z",
+          "status": "PASS",
+          "result": {
+            "policy": "step=max(1, round(source_fps / 6)); retain frames whose zero-based index modulo step is zero",
+            "source_fps": 30.0,
+            "target_fps": 6,
+            "step": 5,
+            "decoded_frame_count": 318,
+            "sampled_frame_count": 64,
+            "first_bgr_shape": [
+              1080,
+              1920,
+              3
+            ]
+          },
+          "elapsed_seconds": 1.934
+        },
+        "yolov8l_bytetrack": {
+          "started_utc": "2026-09-28T01:05:16Z",
+          "status": "PASS",
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              10,
+              11,
+              12,
+              13,
+              14,
+              21,
+              25
+            ],
+            "track_lengths": {
+              "1": 28,
+              "2": 13,
+              "3": 8,
+              "4": 3,
+              "5": 13,
+              "6": 13,
+              "7": 11,
+              "8": 17,
+              "10": 6,
+              "11": 28,
+              "12": 1,
+              "13": 20,
+              "14": 22,
+              "21": 2,
+              "25": 8
+            },
+            "policy": "YOLOv8-L, ByteTrack, person class 0, conf=0.5"
+          },
+          "elapsed_seconds": 2.031
+        },
+        "trajectory_smoothing": {
+          "started_utc": "2026-09-28T01:05:18Z",
+          "status": "PASS",
+          "result": {
+            "policy": "Gaussian smoothing only for tracks of length >=5; sigma=5/3 on xywh coordinates",
+            "track_lengths": {
+              "1": 28,
+              "2": 13,
+              "3": 8,
+              "4": 3,
+              "5": 13,
+              "6": 13,
+              "7": 11,
+              "8": 17,
+              "10": 6,
+              "11": 28,
+              "12": 1,
+              "13": 20,
+              "14": 22,
+              "21": 2,
+              "25": 8
+            }
+          },
+          "elapsed_seconds": 0.007
+        },
+        "k8_selection": {
+          "started_utc": "2026-09-28T01:05:18Z",
+          "status": "WARNING",
+          "result": {
+            "status": "CUSTOM_RECONSTRUCTION_DEVIATION",
+            "original_policy_status": "No explicit paper/repository K=8 retention ranking was found.",
+            "ranking_rule": "descending observed track length; ties broken by ascending numeric track ID",
+            "observed_track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              10,
+              11,
+              12,
+              13,
+              14,
+              21,
+              25
+            ],
+            "observed_track_lengths": {
+              "1": 28,
+              "2": 13,
+              "3": 8,
+              "4": 3,
+              "5": 13,
+              "6": 13,
+              "7": 11,
+              "8": 17,
+              "10": 6,
+              "11": 28,
+              "12": 1,
+              "13": 20,
+              "14": 22,
+              "21": 2,
+              "25": 8
+            },
+            "ranked_track_ids": [
+              1,
+              11,
+              14,
+              13,
+              8,
+              2,
+              5,
+              6,
+              7,
+              3,
+              25,
+              10,
+              4,
+              21,
+              12
+            ],
+            "selected_track_ids": [
+              1,
+              11,
+              14,
+              13,
+              8,
+              2,
+              5,
+              6
+            ],
+            "selected_count": 8,
+            "representation": "K=8 explicit: selected tracks occupy slots 0..selected_count-1; remaining slots are zero-padded downstream.",
+            "sensitivity_note": "Alternative retention rules (confidence, area, centrality, or tracker order) can change local features and synchrony, so results must be sensitivity-checked."
+          },
+          "elapsed_seconds": 0.0,
+          "reason": "CUSTOM RECONSTRUCTION DEVIATION: the paper/repository does not define this K=8 retention ranking."
+        },
+        "dinov2_person_features": {
+          "started_utc": "2026-09-28T01:05:18Z",
+          "status": "PASS",
+          "result": {
+            "checkpoint": "facebook/dinov2-base",
+            "feature_shape": [
+              154,
+              768
+            ],
+            "per_track_lengths": {
+              "1": 28,
+              "11": 28,
+              "14": 22,
+              "13": 20,
+              "8": 17,
+              "2": 13,
+              "5": 13,
+              "6": 13
+            },
+            "dtype": "float32"
+          },
+          "elapsed_seconds": 1.954
+        },
+        "synchrony": {
+          "started_utc": "2026-09-28T01:05:20Z",
+          "status": "PASS",
+          "result": {
+            "shape": [
+              8,
+              8
+            ],
+            "selected_track_ids": [
+              1,
+              11,
+              14,
+              13,
+              8,
+              2,
+              5,
+              6
+            ],
+            "gamma": 0.07640986889600754,
+            "assumptions": "Only the custom K=8-selected tracks are used. Selected tracks occupy leading matrix rows/columns; zero-padded rows/columns are excluded; diagonal is excluded; pairwise sequences are aligned by truncated observed-order length; no temporal mask is propagated."
+          },
+          "elapsed_seconds": 0.002
+        },
+        "hubert_audio": {
+          "started_utc": "2026-09-28T01:05:20Z",
+          "status": "PASS",
+          "result": {
+            "checkpoint": "facebook/hubert-base-ls960",
+            "decoded_sample_rate": 16000,
+            "mono_samples": 170899,
+            "native_feature_shape": [
+              533,
+              768
+            ],
+            "dtype": "float32",
+            "t32_mapping": "BLOCKED: native HuBERT sequence is reported without truncation, padding, or temporal remapping"
+          },
+          "elapsed_seconds": 1.079
+        },
+        "videomae_contract": {
+          "status": "BLOCKED",
+          "reason": "Current code names MCG-NJU/videomae-base, samples 16 frames, and yields a token sequence; it is not asserted as VideoMAE-v2 and no scientific T=32 mapping is applied.",
+          "elapsed_seconds": 0.0
+        },
+        "text_contract": {
+          "status": "BLOCKED",
+          "result": {
+            "expected_field": "Description (final extractor) / description (raw metadata)",
+            "backbone": "roberta-base",
+            "candidate_metadata": [],
+            "status": "BLOCKED",
+            "reason": "No verified non-empty, clip-aligned GECV description source is available; RoBERTa is not run and text is not fabricated."
+          },
+          "elapsed_seconds": 0.0
+        },
+        "canonical_label": {
+          "status": "PASS",
+          "result": {
+            "mapping": "Neutral -> 1"
+          },
+          "elapsed_seconds": 0.0
+        }
+      }
+    },
+    {
+      "video_id": "videoS001",
+      "class_name": "Negative",
+      "canonical_label": 2,
+      "stages": {
+        "locate": {
+          "started_utc": "2026-09-28T01:05:21Z",
+          "status": "PASS",
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase5c_pilot_media/videoS001.mp4",
+            "bytes": 22422192
+          },
+          "elapsed_seconds": 36.312
+        },
+        "ffprobe": {
+          "started_utc": "2026-09-28T01:05:58Z",
+          "status": "PASS",
+          "result": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "mpeg4",
+                "codec_long_name": "MPEG-4 part 2",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "nb_frames": "443"
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "codec_type": "audio",
+                "sample_rate": "44100",
+                "channels": 2,
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "nb_frames": "639"
+              }
+            ],
+            "format": {
+              "duration": "14.837551",
+              "size": "22422192"
+            }
+          },
+          "elapsed_seconds": 0.073
+        },
+        "decode_and_6hz_sample": {
+          "started_utc": "2026-09-28T01:05:58Z",
+          "status": "PASS",
+          "result": {
+            "policy": "step=max(1, round(source_fps / 6)); retain frames whose zero-based index modulo step is zero",
+            "source_fps": 30.0,
+            "target_fps": 6,
+            "step": 5,
+            "decoded_frame_count": 443,
+            "sampled_frame_count": 89,
+            "first_bgr_shape": [
+              1080,
+              1920,
+              3
+            ]
+          },
+          "elapsed_seconds": 2.766
+        },
+        "yolov8l_bytetrack": {
+          "started_utc": "2026-09-28T01:06:00Z",
+          "status": "PASS",
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              9,
+              10,
+              12,
+              16,
+              21,
+              24,
+              26,
+              28,
+              29,
+              30,
+              37,
+              39,
+              42,
+              43,
+              45,
+              46,
+              48,
+              49,
+              51,
+              53,
+              57,
+              58,
+              59,
+              61,
+              62,
+              63,
+              65,
+              69,
+              71,
+              72,
+              74,
+              75,
+              76,
+              77,
+              81
+            ],
+            "track_lengths": {
+              "1": 16,
+              "2": 16,
+              "3": 11,
+              "4": 8,
+              "5": 1,
+              "9": 1,
+              "10": 16,
+              "12": 2,
+              "16": 16,
+              "21": 48,
+              "24": 19,
+              "26": 54,
+              "28": 3,
+              "29": 4,
+              "30": 49,
+              "37": 39,
+              "39": 49,
+              "42": 3,
+              "43": 5,
+              "45": 1,
+              "46": 4,
+              "48": 3,
+              "49": 2,
+              "51": 5,
+              "53": 41,
+              "57": 35,
+              "58": 23,
+              "59": 12,
+              "61": 32,
+              "62": 11,
+              "63": 9,
+              "65": 11,
+              "69": 4,
+              "71": 4,
+              "72": 7,
+              "74": 6,
+              "75": 6,
+              "76": 6,
+              "77": 6,
+              "81": 2
+            },
+            "policy": "YOLOv8-L, ByteTrack, person class 0, conf=0.5"
+          },
+          "elapsed_seconds": 2.824
+        },
+        "trajectory_smoothing": {
+          "started_utc": "2026-09-28T01:06:03Z",
+          "status": "PASS",
+          "result": {
+            "policy": "Gaussian smoothing only for tracks of length >=5; sigma=5/3 on xywh coordinates",
+            "track_lengths": {
+              "1": 16,
+              "2": 16,
+              "3": 11,
+              "4": 8,
+              "5": 1,
+              "9": 1,
+              "10": 16,
+              "12": 2,
+              "16": 16,
+              "21": 48,
+              "24": 19,
+              "26": 54,
+              "28": 3,
+              "29": 4,
+              "30": 49,
+              "37": 39,
+              "39": 49,
+              "42": 3,
+              "43": 5,
+              "45": 1,
+              "46": 4,
+              "48": 3,
+              "49": 2,
+              "51": 5,
+              "53": 41,
+              "57": 35,
+              "58": 23,
+              "59": 12,
+              "61": 32,
+              "62": 11,
+              "63": 9,
+              "65": 11,
+              "69": 4,
+              "71": 4,
+              "72": 7,
+              "74": 6,
+              "75": 6,
+              "76": 6,
+              "77": 6,
+              "81": 2
+            }
+          },
+          "elapsed_seconds": 0.017
+        },
+        "k8_selection": {
+          "started_utc": "2026-09-28T01:06:03Z",
+          "status": "WARNING",
+          "result": {
+            "status": "CUSTOM_RECONSTRUCTION_DEVIATION",
+            "original_policy_status": "No explicit paper/repository K=8 retention ranking was found.",
+            "ranking_rule": "descending observed track length; ties broken by ascending numeric track ID",
+            "observed_track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              9,
+              10,
+              12,
+              16,
+              21,
+              24,
+              26,
+              28,
+              29,
+              30,
+              37,
+              39,
+              42,
+              43,
+              45,
+              46,
+              48,
+              49,
+              51,
+              53,
+              57,
+              58,
+              59,
+              61,
+              62,
+              63,
+              65,
+              69,
+              71,
+              72,
+              74,
+              75,
+              76,
+              77,
+              81
+            ],
+            "observed_track_lengths": {
+              "1": 16,
+              "2": 16,
+              "3": 11,
+              "4": 8,
+              "5": 1,
+              "9": 1,
+              "10": 16,
+              "12": 2,
+              "16": 16,
+              "21": 48,
+              "24": 19,
+              "26": 54,
+              "28": 3,
+              "29": 4,
+              "30": 49,
+              "37": 39,
+              "39": 49,
+              "42": 3,
+              "43": 5,
+              "45": 1,
+              "46": 4,
+              "48": 3,
+              "49": 2,
+              "51": 5,
+              "53": 41,
+              "57": 35,
+              "58": 23,
+              "59": 12,
+              "61": 32,
+              "62": 11,
+              "63": 9,
+              "65": 11,
+              "69": 4,
+              "71": 4,
+              "72": 7,
+              "74": 6,
+              "75": 6,
+              "76": 6,
+              "77": 6,
+              "81": 2
+            },
+            "ranked_track_ids": [
+              26,
+              30,
+              39,
+              21,
+              53,
+              37,
+              57,
+              61,
+              58,
+              24,
+              1,
+              2,
+              10,
+              16,
+              59,
+              3,
+              62,
+              65,
+              63,
+              4,
+              72,
+              74,
+              75,
+              76,
+              77,
+              43,
+              51,
+              29,
+              46,
+              69,
+              71,
+              28,
+              42,
+              48,
+              12,
+              49,
+              81,
+              5,
+              9,
+              45
+            ],
+            "selected_track_ids": [
+              26,
+              30,
+              39,
+              21,
+              53,
+              37,
+              57,
+              61
+            ],
+            "selected_count": 8,
+            "representation": "K=8 explicit: selected tracks occupy slots 0..selected_count-1; remaining slots are zero-padded downstream.",
+            "sensitivity_note": "Alternative retention rules (confidence, area, centrality, or tracker order) can change local features and synchrony, so results must be sensitivity-checked."
+          },
+          "elapsed_seconds": 0.0,
+          "reason": "CUSTOM RECONSTRUCTION DEVIATION: the paper/repository does not define this K=8 retention ranking."
+        },
+        "dinov2_person_features": {
+          "started_utc": "2026-09-28T01:06:03Z",
+          "status": "PASS",
+          "result": {
+            "checkpoint": "facebook/dinov2-base",
+            "feature_shape": [
+              347,
+              768
+            ],
+            "per_track_lengths": {
+              "26": 54,
+              "30": 49,
+              "39": 49,
+              "21": 48,
+              "53": 41,
+              "37": 39,
+              "57": 35,
+              "61": 32
+            },
+            "dtype": "float32"
+          },
+          "elapsed_seconds": 4.065
+        },
+        "synchrony": {
+          "started_utc": "2026-09-28T01:06:07Z",
+          "status": "PASS",
+          "result": {
+            "shape": [
+              8,
+              8
+            ],
+            "selected_track_ids": [
+              26,
+              30,
+              39,
+              21,
+              53,
+              37,
+              57,
+              61
+            ],
+            "gamma": 0.09695450961589813,
+            "assumptions": "Only the custom K=8-selected tracks are used. Selected tracks occupy leading matrix rows/columns; zero-padded rows/columns are excluded; diagonal is excluded; pairwise sequences are aligned by truncated observed-order length; no temporal mask is propagated."
+          },
+          "elapsed_seconds": 0.001
+        },
+        "hubert_audio": {
+          "started_utc": "2026-09-28T01:06:07Z",
+          "status": "PASS",
+          "result": {
+            "checkpoint": "facebook/hubert-base-ls960",
+            "decoded_sample_rate": 16000,
+            "mono_samples": 237401,
+            "native_feature_shape": [
+              741,
+              768
+            ],
+            "dtype": "float32",
+            "t32_mapping": "BLOCKED: native HuBERT sequence is reported without truncation, padding, or temporal remapping"
+          },
+          "elapsed_seconds": 0.959
+        },
+        "videomae_contract": {
+          "status": "BLOCKED",
+          "reason": "Current code names MCG-NJU/videomae-base, samples 16 frames, and yields a token sequence; it is not asserted as VideoMAE-v2 and no scientific T=32 mapping is applied.",
+          "elapsed_seconds": 0.0
+        },
+        "text_contract": {
+          "status": "BLOCKED",
+          "result": {
+            "expected_field": "Description (final extractor) / description (raw metadata)",
+            "backbone": "roberta-base",
+            "candidate_metadata": [],
+            "status": "BLOCKED",
+            "reason": "No verified non-empty, clip-aligned GECV description source is available; RoBERTa is not run and text is not fabricated."
+          },
+          "elapsed_seconds": 0.0
+        },
+        "canonical_label": {
+          "status": "PASS",
+          "result": {
+            "mapping": "Negative -> 2"
+          },
+          "elapsed_seconds": 0.0
+        }
+      }
+    }
+  ],
+  "finished_utc": "2026-09-28T01:06:08Z",
+  "overall_status": "COMPLETE: diagnostic stages are reported individually; global VideoMAE/T=32 and text remain scientific gates."
+}

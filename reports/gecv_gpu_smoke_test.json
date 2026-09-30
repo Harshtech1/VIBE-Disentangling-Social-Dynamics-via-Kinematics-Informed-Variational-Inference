@@ -1,0 +1,152 @@
+{
+  "protocol": "VIBE-GECV-RECON-v1.0",
+  "scope": "one GPU train batch plus tiny validation inference; no full training",
+  "gpu": {
+    "name": "NVIDIA L4",
+    "vram_gb": 22.03,
+    "torch": "2.8.0+cu128",
+    "torch_cuda": "12.8"
+  },
+  "split": {
+    "counts": {
+      "train": 282,
+      "validation": 61,
+      "test": 61
+    },
+    "smoke_only_ids": [
+      "videoH001",
+      "videoN001",
+      "videoS001"
+    ],
+    "checkpoint_directory": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/checkpoints/gecv_reconstruction_v1",
+    "test_data_used_for_training": false
+  },
+  "train_batch": {
+    "shapes": {
+      "local_p": [
+        16,
+        8,
+        32,
+        768
+      ],
+      "audio_seq": [
+        16,
+        32,
+        768
+      ],
+      "global_v": [
+        16,
+        768
+      ],
+      "gamma": [
+        16,
+        1,
+        1
+      ],
+      "logits": [
+        16,
+        3
+      ]
+    },
+    "losses": {
+      "total": 11560.6767578125,
+      "hce": 1.1902259588241577,
+      "kl": 11559.486328125,
+      "sat": 0.0,
+      "ortho": 2.1284418835421093e-05
+    },
+    "gradients_finite": true,
+    "optimizer_step": "PASS",
+    "elapsed_seconds": 0.9635,
+    "memory_mb": {
+      "allocated_mb": 334.71,
+      "reserved_mb": 744.0,
+      "peak_allocated_mb": 659.86,
+      "peak_reserved_mb": 744.0
+    }
+  },
+  "validation": {
+    "source_ids": [
+      "videoH002",
+      "videoN008",
+      "videoS010"
+    ],
+    "labels": [
+      0,
+      1,
+      2
+    ],
+    "logits_shape": [
+      3,
+      3
+    ],
+    "metrics": {
+      "acc": 0.3333333333333333,
+      "f1": 0.16666666666666666,
+      "weighted_f1": 0.16666666666666666,
+      "macro_f1": 0.16666666666666666,
+      "macro_precision": 0.1111111111111111,
+      "macro_recall": 0.3333333333333333,
+      "per_class": {
+        "Positive": {
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "support": 1
+        },
+        "Neutral": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "Negative": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        }
+      },
+      "confusion_matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "class_order": [
+        "Positive",
+        "Neutral",
+        "Negative"
+      ]
+    }
+  },
+  "scheduler": {
+    "epoch_1_to_5_lr": [
+      3.3333333333333335e-05,
+      6.666666666666667e-05,
+      0.0001,
+      9.966191788709716e-05,
+      9.865224352899119e-05
+    ],
+    "expected": [
+      3.333333e-05,
+      6.666667e-05,
+      0.0001,
+      9.966192e-05,
+      9.865224e-05
+    ]
+  },
+  "full_training_command_not_executed": "python trainer/train_model.py --config config/train_gecv_reconstruction_v1.yaml",
+  "status": "GPU_SMOKE_PASS"
+}

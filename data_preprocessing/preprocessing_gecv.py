@@ -519,8 +519,8 @@ class GEVCDataPreprocessor:
 
 if __name__ == "__main__":
     # UPDATE THESE PATHS
-    DATASET_ROOT = './GEVC'
-    OUTPUT_ROOT = './GEVC_processed'
+    DATASET_ROOT = './GECV'
+    OUTPUT_ROOT = './GECV_processed'
     
     processor = GEVCDataPreprocessor(
         dataset_root=DATASET_ROOT,
@@ -531,7 +531,7 @@ if __name__ == "__main__":
     )
     
     print("\n" + "="*50)
-    print(" STARTING GEVC PREPROCESSING")
+    print(" STARTING GECV PREPROCESSING")
     print("="*50)
     processor.run()
     print("\nProcessing Complete.")

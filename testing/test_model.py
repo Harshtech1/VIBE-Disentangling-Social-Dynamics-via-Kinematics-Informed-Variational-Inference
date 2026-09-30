@@ -34,7 +34,7 @@ class CSYNCTester:
 
         # 3. Load Test Data
         test_source = Path(cfg['data_root']) / 'val'
-        self.test_files = sorted(list(test_source.glob("*_csync.h5")))
+        self.test_files = sorted(list(test_source.glob("*_vibe.h5")))
         
         if len(self.test_files) == 0:
             raise ValueError(f"No test files found in {test_source}")
@@ -222,5 +222,4 @@ if __name__ == "__main__":
     
     # Assuming 'checkpoint_folder' is defined in the config yaml
     tester.scan_and_evaluate_all(test_config['checkpoint_folder'])
-
 

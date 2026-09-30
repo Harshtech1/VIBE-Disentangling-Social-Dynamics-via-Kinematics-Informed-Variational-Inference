@@ -1,0 +1,41 @@
+# VIBE-GECV-RECON-v1.0 three-seed robustness run. Scientific delta from the
+# frozen baseline: seed only. Output locations are supplied by CLI overrides.
+seed: 20260929
+data_root: "data/gecv_reconstruction_v1"
+split_manifest: "data/manifests/gecv_reconstruction_v1_split_seed20260928.json"
+log_dir: "logs/gecv_reconstruction_v1"
+checkpoint_dir: "checkpoints/gecv_reconstruction_v1"
+
+dataset_schema: gecv_reconstruction_v1
+reconstruction_gamma_source: stored
+reconstruction_mode: true
+batch_size: 16
+num_workers: 0
+max_k: 8
+max_t: 32
+
+input_dim: 768
+latent_dim: 512
+num_classes: 3
+attention_heads: 8
+transformer_depth: 2
+dropout: 0.3
+drop_path: 0.1
+
+epochs: 30
+optimizer: adamw
+lr: 1.0e-4
+weight_decay: 1.0e-3
+scheduler: warmup_cosine
+warmup_epochs: 3
+eta_min: 0.0
+mixup_alpha: 0.2
+grad_clip: 1.0
+
+enable_sat: false
+lambda_sat: 0.0
+lambda_ortho: 0.1
+
+best_metric: macro_f1
+save_threshold: 0.60
+enable_visualization: false

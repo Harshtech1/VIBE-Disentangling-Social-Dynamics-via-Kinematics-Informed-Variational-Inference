@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "scope": "CPU-only real-data Dataset -> collate -> model -> loss -> backward -> one optimizer step",
+  "source_ids": [
+    "videoH001",
+    "videoN001",
+    "videoS001"
+  ],
+  "device": "cpu",
+  "hdf5_to_model_mapping": {
+    "local_features": "local_p [B,8,32,768]",
+    "local_time_mask": "local_time_mask [B,8,32]",
+    "agent_mask": "agent_mask [B,8]",
+    "audio_features": "audio_seq [B,32,768] via explicit structural compatibility adapter",
+    "audio_time_mask": "audio_time_mask [B,32]",
+    "global_scene": "global_v [B,768]; one scene-calibration vector, not a temporal sequence",
+    "physics_sync": "sync_mat [B,8,8] retained in the batch; the current model consumes gamma rather than sync_mat directly",
+    "gamma": "stored extraction scalar -> gamma [B,1,1] for global-adaptive temporal modulation",
+    "env_feat": "None; no tensor is fabricated and current VIBE_Transformer does not read this legacy argument"
+  },
+  "component_trace": {
+    "dataset": "VIBEDataset(schema_mode='gecv_reconstruction_v1') detects protocol VIBE-GECV-RECON-v1.0 and applies only the explicit alias adapter.",
+    "collate": "vibe_collate_fn batches masks and uses stored HDF5 gamma [B,1,1]; it retains physics_sync as sync_mat.",
+    "model": "VIBE_Transformer consumes local_p, global_v, audio_seq, gamma, and masks. env_feat remains a legacy API argument but has no read site in the model.",
+    "loss": "VIBE_Loss consumes model output/labels; semantic alignment is disabled because text is absent and enable_sat=False.",
+    "physics_sync": "The present model interface does not consume sync_mat directly; its extractor-produced scalar gamma is the synchrony signal passed to the model."
+  },
+  "text_status": "OFF; text_anch=None",
+  "l_sat_status": "DISABLED; enable_sat=False and lambda_sat=0.0",
+  "batch_shapes": {
+    "local_p": [
+      3,
+      8,
+      32,
+      768
+    ],
+    "local_time_mask": [
+      3,
+      8,
+      32
+    ],
+    "agent_mask": [
+      3,
+      8
+    ],
+    "audio_seq": [
+      3,
+      32,
+      768
+    ],
+    "audio_time_mask": [
+      3,
+      32
+    ],
+    "global_v": [
+      3,
+      768
+    ],
+    "sync_mat": [
+      3,
+      8,
+      8
+    ],
+    "gamma": [
+      3,
+      1,
+      1
+    ],
+    "env_feat": null,
+    "labels": [
+      0,
+      1,
+      2
+    ]
+  },
+  "forward": {
+    "logits_shape": [
+      3,
+      3
+    ],
+    "all_logits_finite": true
+  },
+  "losses": {
+    "total": 9361.251953125,
+    "hce": 1.0267027616500854,
+    "kl": 9360.2255859375,
+    "sat": 0.0,
+    "ortho": 2.8645279599004425e-05
+  },
+  "backward": "PASS",
+  "optimizer_step": "PASS",
+  "mask_invariance": {
+    "status": "PASS",
+    "tolerance": {
+      "atol": 1e-05,
+      "rtol": 1e-05
+    },
+    "mutated_local_masked_positions": 368,
+    "mutated_audio_masked_positions": 0,
+    "max_abs_logit_difference": 0.0,
+    "note": "Audio mutation count may be zero when all 32 reconstruction audio bins are valid."
+  },
+  "remaining_blockers": [
+    "This is VIBE-GECV-RECON-v1.0, not a paper-faithful VIBE claim.",
+    "Full training/evaluation remains outside this integration gate."
+  ]
+}

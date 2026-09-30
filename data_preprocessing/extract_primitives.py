@@ -17,8 +17,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class VIBEFeatureEngine:
-    def __init__(self, device='cuda'):
+    def __init__(self, device='cuda', max_k=8):
         self.device = device
+        self.max_k = max_k
         
         # 1. Global Context: VideoMAE V2 (Sequential Tokens)
         logger.info("Loading VideoMAE V2...")
@@ -35,8 +36,9 @@ class VIBEFeatureEngine:
         self.text_tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
         self.text_model = RobertaModel.from_pretrained("roberta-base").to(device).eval()
 
-    def calculate_physics_sync(self, trajectories, frame_dim, max_k=5):
+    def calculate_physics_sync(self, trajectories, frame_dim, max_k=None):
         """Calculates Behavioral Synchrony Matrix from raw_coords."""
+        max_k = self.max_k if max_k is None else max_k
         H, W = frame_dim
         pids = list(trajectories.keys())[:max_k]
         vel_list = []
@@ -95,7 +97,7 @@ class VIBEFeatureEngine:
             all_person_frames = []
             person_lengths = []
             
-            valid_persons = persons[:min(len(persons), 5)]
+            valid_persons = persons[:min(len(persons), self.max_k)]
             
             for p_frames in valid_persons:
                 if len(p_frames) > 0:

@@ -1,0 +1,2187 @@
+{
+  "protocol": "VIBE-GECV-RECON-v1.0",
+  "started_utc": "2026-09-28T18:54:32Z",
+  "clips": [
+    {
+      "video_id": "videoH001",
+      "class_name": "Positive",
+      "canonical_label": 0,
+      "stages": {
+        "locate": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/media/videoH001.mp4",
+            "bytes": 13434081
+          }
+        },
+        "ffprobe": {
+          "status": "PASS",
+          "elapsed_seconds": 0.035,
+          "result": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "mpeg4",
+                "codec_long_name": "MPEG-4 part 2",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "nb_frames": "263"
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "codec_type": "audio",
+                "sample_rate": "44100",
+                "channels": 2,
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "nb_frames": "381"
+              }
+            ],
+            "format": {
+              "duration": "8.846803",
+              "size": "13434081"
+            }
+          }
+        },
+        "decode_6hz": {
+          "status": "PASS",
+          "elapsed_seconds": 0.806,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    53,
+                    1080,
+                    1920,
+                    3
+                  ],
+                  "dtype": "uint8"
+                }
+              },
+              {
+                "policy": "step=max(1, round(source_fps / 6)); retain frames whose zero-based index modulo step is zero",
+                "source_fps": 30.0,
+                "target_fps": 6,
+                "step": 5,
+                "decoded_frame_count": 263,
+                "sampled_frame_count": 53,
+                "first_bgr_shape": [
+                  1080,
+                  1920,
+                  3
+                ]
+              }
+            ]
+          }
+        },
+        "shared_t32_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "timestamps": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "float64"
+              }
+            },
+            "source_frames": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "int64"
+              }
+            },
+            "valid": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "bool"
+              }
+            },
+            "duration_seconds": {
+              "array": {
+                "shape": [],
+                "dtype": "float64"
+              }
+            }
+          }
+        },
+        "track": {
+          "status": "PASS",
+          "elapsed_seconds": 1.039,
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              14,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              26,
+              29,
+              31,
+              33,
+              35,
+              36,
+              37
+            ],
+            "track_lengths": {
+              "1": 49,
+              "2": 21,
+              "3": 6,
+              "4": 5,
+              "5": 17,
+              "6": 33,
+              "7": 36,
+              "8": 20,
+              "9": 15,
+              "10": 17,
+              "14": 28,
+              "16": 2,
+              "17": 11,
+              "18": 31,
+              "19": 33,
+              "20": 21,
+              "21": 33,
+              "22": 8,
+              "26": 10,
+              "29": 10,
+              "31": 9,
+              "33": 4,
+              "35": 1,
+              "36": 1,
+              "37": 1
+            },
+            "mean_detection_confidence": {
+              "1": 0.7560920277420355,
+              "2": 0.7142999030294872,
+              "3": 0.6779862840970358,
+              "4": 0.6613892078399658,
+              "5": 0.6815632055787479,
+              "6": 0.7181022040771715,
+              "7": 0.654852408501837,
+              "8": 0.7619242250919342,
+              "9": 0.765876297156016,
+              "10": 0.7327130962820614,
+              "14": 0.6903515266520637,
+              "16": 0.5348332226276398,
+              "17": 0.5665969740260731,
+              "18": 0.7210098870338932,
+              "19": 0.6857162786252571,
+              "20": 0.6873297890027364,
+              "21": 0.6768803361690405,
+              "22": 0.587627150118351,
+              "26": 0.685948783159256,
+              "29": 0.5911500096321106,
+              "31": 0.7763944268226624,
+              "33": 0.5649376064538956,
+              "35": 0.6250790357589722,
+              "36": 0.5746981501579285,
+              "37": 0.5008357763290405
+            }
+          }
+        },
+        "trajectory_smoothing": {
+          "status": "PASS",
+          "elapsed_seconds": 0.002,
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              14,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              26,
+              29,
+              31,
+              33,
+              35,
+              36,
+              37
+            ],
+            "track_lengths": {
+              "1": 49,
+              "2": 21,
+              "3": 6,
+              "4": 5,
+              "5": 17,
+              "6": 33,
+              "7": 36,
+              "8": 20,
+              "9": 15,
+              "10": 17,
+              "14": 28,
+              "16": 2,
+              "17": 11,
+              "18": 31,
+              "19": 33,
+              "20": 21,
+              "21": 33,
+              "22": 8,
+              "26": 10,
+              "29": 10,
+              "31": 9,
+              "33": 4,
+              "35": 1,
+              "36": 1,
+              "37": 1
+            }
+          }
+        },
+        "k8_custom_selection": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "status": "CUSTOM_RECONSTRUCTION_DEVIATION",
+            "rule": "descending observed duration, then descending mean detection confidence, then ascending numeric track ID",
+            "observed_track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              14,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              26,
+              29,
+              31,
+              33,
+              35,
+              36,
+              37
+            ],
+            "observed_track_lengths": {
+              "1": 49,
+              "2": 21,
+              "3": 6,
+              "4": 5,
+              "5": 17,
+              "6": 33,
+              "7": 36,
+              "8": 20,
+              "9": 15,
+              "10": 17,
+              "14": 28,
+              "16": 2,
+              "17": 11,
+              "18": 31,
+              "19": 33,
+              "20": 21,
+              "21": 33,
+              "22": 8,
+              "26": 10,
+              "29": 10,
+              "31": 9,
+              "33": 4,
+              "35": 1,
+              "36": 1,
+              "37": 1
+            },
+            "mean_detection_confidence": {
+              "1": 0.7560920277420355,
+              "2": 0.7142999030294872,
+              "3": 0.6779862840970358,
+              "4": 0.6613892078399658,
+              "5": 0.6815632055787479,
+              "6": 0.7181022040771715,
+              "7": 0.654852408501837,
+              "8": 0.7619242250919342,
+              "9": 0.765876297156016,
+              "10": 0.7327130962820614,
+              "14": 0.6903515266520637,
+              "16": 0.5348332226276398,
+              "17": 0.5665969740260731,
+              "18": 0.7210098870338932,
+              "19": 0.6857162786252571,
+              "20": 0.6873297890027364,
+              "21": 0.6768803361690405,
+              "22": 0.587627150118351,
+              "26": 0.685948783159256,
+              "29": 0.5911500096321106,
+              "31": 0.7763944268226624,
+              "33": 0.5649376064538956,
+              "35": 0.6250790357589722,
+              "36": 0.5746981501579285,
+              "37": 0.5008357763290405
+            },
+            "selected_track_ids": [
+              1,
+              7,
+              6,
+              19,
+              21,
+              18,
+              14,
+              2
+            ],
+            "selected_count": 8
+          }
+        },
+        "dino_native_and_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 2.231,
+          "result": {
+            "tuple": [
+              {
+                "1": {
+                  "array": {
+                    "shape": [
+                      49,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "7": {
+                  "array": {
+                    "shape": [
+                      36,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "6": {
+                  "array": {
+                    "shape": [
+                      33,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "19": {
+                  "array": {
+                    "shape": [
+                      33,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "21": {
+                  "array": {
+                    "shape": [
+                      33,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "18": {
+                  "array": {
+                    "shape": [
+                      31,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "14": {
+                  "array": {
+                    "shape": [
+                      28,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "2": {
+                  "array": {
+                    "shape": [
+                      21,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                }
+              },
+              {
+                "1": {
+                  "array": {
+                    "shape": [
+                      49
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "7": {
+                  "array": {
+                    "shape": [
+                      36
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "6": {
+                  "array": {
+                    "shape": [
+                      33
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "19": {
+                  "array": {
+                    "shape": [
+                      33
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "21": {
+                  "array": {
+                    "shape": [
+                      33
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "18": {
+                  "array": {
+                    "shape": [
+                      31
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "14": {
+                  "array": {
+                    "shape": [
+                      28
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "2": {
+                  "array": {
+                    "shape": [
+                      21
+                    ],
+                    "dtype": "float64"
+                  }
+                }
+              },
+              {
+                "checkpoint": "facebook/dinov2-base",
+                "native_feature_count": 264,
+                "native_shape": [
+                  264,
+                  768
+                ]
+              }
+            ]
+          }
+        },
+        "ffmpeg_pcm": {
+          "status": "PASS",
+          "elapsed_seconds": 0.107,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    141549
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "command": [
+                  "ffmpeg",
+                  "-y",
+                  "-v",
+                  "error",
+                  "-i",
+                  "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/media/videoH001.mp4",
+                  "-ac",
+                  "1",
+                  "-ar",
+                  "16000",
+                  "-c:a",
+                  "pcm_s16le",
+                  "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/pcm/videoH001.wav"
+                ],
+                "sample_rate": 16000,
+                "channels": 1,
+                "samples": 141549,
+                "sha256": "8b9b752db60be59ff0d3f084a3563386f7c76bcbe699063a20fb25239994c0f8"
+              }
+            ]
+          }
+        },
+        "videomaev2_scene": {
+          "status": "PASS",
+          "elapsed_seconds": 3.085,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    768
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "checkpoint": "OpenGVLab/VideoMAEv2-Base",
+                "input_indices_at_6hz": [
+                  0,
+                  3,
+                  6,
+                  10,
+                  13,
+                  17,
+                  20,
+                  24,
+                  27,
+                  31,
+                  34,
+                  38,
+                  41,
+                  45,
+                  48,
+                  52
+                ],
+                "raw_output_shape": [
+                  1,
+                  768
+                ],
+                "pooling": "mean over non-feature output axes to a single 768-D scene calibration vector; no temporal semantics asserted",
+                "status": "CUSTOM_RECONSTRUCTION_DEVIATION"
+              }
+            ]
+          }
+        },
+        "hubert_native_and_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 0.248,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    32,
+                    768
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "array": {
+                  "shape": [
+                    32
+                  ],
+                  "dtype": "bool"
+                }
+              },
+              {
+                "checkpoint": "facebook/hubert-base-ls960",
+                "native_shape": [
+                  442,
+                  768
+                ],
+                "mapping": "midpoint-bin mean pooling on the shared source-video grid",
+                "checkpoint_loading": "PASS",
+                "weight_norm_compatibility": "project-local legacy weight_norm construction for Torch 2.8 + Transformers 4.38"
+              }
+            ]
+          }
+        },
+        "shared_interval_synchrony": {
+          "status": "PASS",
+          "elapsed_seconds": 0.003,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    8,
+                    8
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "array": {
+                  "shape": [
+                    8,
+                    8
+                  ],
+                  "dtype": "bool"
+                }
+              },
+              0.12047316133975983
+            ]
+          }
+        },
+        "write_pilot_h5": {
+          "status": "PASS",
+          "elapsed_seconds": 0.004,
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/h5/videoH001_recon_v1.h5"
+          }
+        }
+      },
+      "contract": {
+        "local_features": [
+          8,
+          32,
+          768
+        ],
+        "local_time_mask": [
+          8,
+          32
+        ],
+        "agent_mask": [
+          8
+        ],
+        "audio_features": [
+          32,
+          768
+        ],
+        "audio_time_mask": [
+          32
+        ],
+        "global_scene": [
+          768
+        ],
+        "gamma": 0.12047316133975983,
+        "selected_track_ids": [
+          1,
+          7,
+          6,
+          19,
+          21,
+          18,
+          14,
+          2
+        ],
+        "text": "disabled",
+        "l_sat": "disabled"
+      }
+    },
+    {
+      "video_id": "videoN001",
+      "class_name": "Neutral",
+      "canonical_label": 1,
+      "stages": {
+        "locate": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/media/videoN001.mp4",
+            "bytes": 15878113
+          }
+        },
+        "ffprobe": {
+          "status": "PASS",
+          "elapsed_seconds": 0.047,
+          "result": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "mpeg4",
+                "codec_long_name": "MPEG-4 part 2",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "nb_frames": "318"
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "codec_type": "audio",
+                "sample_rate": "44100",
+                "channels": 2,
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "nb_frames": "460"
+              }
+            ],
+            "format": {
+              "duration": "10.681179",
+              "size": "15878113"
+            }
+          }
+        },
+        "decode_6hz": {
+          "status": "PASS",
+          "elapsed_seconds": 0.881,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    64,
+                    1080,
+                    1920,
+                    3
+                  ],
+                  "dtype": "uint8"
+                }
+              },
+              {
+                "policy": "step=max(1, round(source_fps / 6)); retain frames whose zero-based index modulo step is zero",
+                "source_fps": 30.0,
+                "target_fps": 6,
+                "step": 5,
+                "decoded_frame_count": 318,
+                "sampled_frame_count": 64,
+                "first_bgr_shape": [
+                  1080,
+                  1920,
+                  3
+                ]
+              }
+            ]
+          }
+        },
+        "shared_t32_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "timestamps": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "float64"
+              }
+            },
+            "source_frames": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "int64"
+              }
+            },
+            "valid": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "bool"
+              }
+            },
+            "duration_seconds": {
+              "array": {
+                "shape": [],
+                "dtype": "float64"
+              }
+            }
+          }
+        },
+        "track": {
+          "status": "PASS",
+          "elapsed_seconds": 0.438,
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              10,
+              11,
+              12,
+              13,
+              14,
+              21,
+              25
+            ],
+            "track_lengths": {
+              "1": 28,
+              "2": 13,
+              "3": 8,
+              "4": 3,
+              "5": 13,
+              "6": 13,
+              "7": 11,
+              "8": 17,
+              "10": 6,
+              "11": 28,
+              "12": 1,
+              "13": 20,
+              "14": 22,
+              "21": 2,
+              "25": 8
+            },
+            "mean_detection_confidence": {
+              "1": 0.8182735741138458,
+              "2": 0.7711832018998953,
+              "3": 0.5653451606631279,
+              "4": 0.5551575223604838,
+              "5": 0.5807776955457834,
+              "6": 0.7294080119866592,
+              "7": 0.7753979780457236,
+              "8": 0.5477621169651256,
+              "10": 0.574802984793981,
+              "11": 0.6798387382711683,
+              "12": 0.6106266975402832,
+              "13": 0.6310108482837677,
+              "14": 0.5935356671159918,
+              "21": 0.6332431733608246,
+              "25": 0.5123141258955002
+            }
+          }
+        },
+        "trajectory_smoothing": {
+          "status": "PASS",
+          "elapsed_seconds": 0.001,
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              10,
+              11,
+              12,
+              13,
+              14,
+              21,
+              25
+            ],
+            "track_lengths": {
+              "1": 28,
+              "2": 13,
+              "3": 8,
+              "4": 3,
+              "5": 13,
+              "6": 13,
+              "7": 11,
+              "8": 17,
+              "10": 6,
+              "11": 28,
+              "12": 1,
+              "13": 20,
+              "14": 22,
+              "21": 2,
+              "25": 8
+            }
+          }
+        },
+        "k8_custom_selection": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "status": "CUSTOM_RECONSTRUCTION_DEVIATION",
+            "rule": "descending observed duration, then descending mean detection confidence, then ascending numeric track ID",
+            "observed_track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              10,
+              11,
+              12,
+              13,
+              14,
+              21,
+              25
+            ],
+            "observed_track_lengths": {
+              "1": 28,
+              "2": 13,
+              "3": 8,
+              "4": 3,
+              "5": 13,
+              "6": 13,
+              "7": 11,
+              "8": 17,
+              "10": 6,
+              "11": 28,
+              "12": 1,
+              "13": 20,
+              "14": 22,
+              "21": 2,
+              "25": 8
+            },
+            "mean_detection_confidence": {
+              "1": 0.8182735741138458,
+              "2": 0.7711832018998953,
+              "3": 0.5653451606631279,
+              "4": 0.5551575223604838,
+              "5": 0.5807776955457834,
+              "6": 0.7294080119866592,
+              "7": 0.7753979780457236,
+              "8": 0.5477621169651256,
+              "10": 0.574802984793981,
+              "11": 0.6798387382711683,
+              "12": 0.6106266975402832,
+              "13": 0.6310108482837677,
+              "14": 0.5935356671159918,
+              "21": 0.6332431733608246,
+              "25": 0.5123141258955002
+            },
+            "selected_track_ids": [
+              1,
+              11,
+              14,
+              13,
+              8,
+              2,
+              6,
+              5
+            ],
+            "selected_count": 8
+          }
+        },
+        "dino_native_and_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 1.443,
+          "result": {
+            "tuple": [
+              {
+                "1": {
+                  "array": {
+                    "shape": [
+                      28,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "11": {
+                  "array": {
+                    "shape": [
+                      28,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "14": {
+                  "array": {
+                    "shape": [
+                      22,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "13": {
+                  "array": {
+                    "shape": [
+                      20,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "8": {
+                  "array": {
+                    "shape": [
+                      17,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "2": {
+                  "array": {
+                    "shape": [
+                      13,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "6": {
+                  "array": {
+                    "shape": [
+                      13,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "5": {
+                  "array": {
+                    "shape": [
+                      13,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                }
+              },
+              {
+                "1": {
+                  "array": {
+                    "shape": [
+                      28
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "11": {
+                  "array": {
+                    "shape": [
+                      28
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "14": {
+                  "array": {
+                    "shape": [
+                      22
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "13": {
+                  "array": {
+                    "shape": [
+                      20
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "8": {
+                  "array": {
+                    "shape": [
+                      17
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "2": {
+                  "array": {
+                    "shape": [
+                      13
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "6": {
+                  "array": {
+                    "shape": [
+                      13
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "5": {
+                  "array": {
+                    "shape": [
+                      13
+                    ],
+                    "dtype": "float64"
+                  }
+                }
+              },
+              {
+                "checkpoint": "facebook/dinov2-base",
+                "native_feature_count": 154,
+                "native_shape": [
+                  154,
+                  768
+                ]
+              }
+            ]
+          }
+        },
+        "ffmpeg_pcm": {
+          "status": "PASS",
+          "elapsed_seconds": 0.113,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    170899
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "command": [
+                  "ffmpeg",
+                  "-y",
+                  "-v",
+                  "error",
+                  "-i",
+                  "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/media/videoN001.mp4",
+                  "-ac",
+                  "1",
+                  "-ar",
+                  "16000",
+                  "-c:a",
+                  "pcm_s16le",
+                  "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/pcm/videoN001.wav"
+                ],
+                "sample_rate": 16000,
+                "channels": 1,
+                "samples": 170899,
+                "sha256": "33d66821419b4fd927bed23e7d437819fc73db4a23b9ef5d067c64e7b41a55e7"
+              }
+            ]
+          }
+        },
+        "videomaev2_scene": {
+          "status": "PASS",
+          "elapsed_seconds": 2.821,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    768
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "checkpoint": "OpenGVLab/VideoMAEv2-Base",
+                "input_indices_at_6hz": [
+                  0,
+                  4,
+                  8,
+                  12,
+                  16,
+                  21,
+                  25,
+                  29,
+                  33,
+                  37,
+                  42,
+                  46,
+                  50,
+                  54,
+                  58,
+                  63
+                ],
+                "raw_output_shape": [
+                  1,
+                  768
+                ],
+                "pooling": "mean over non-feature output axes to a single 768-D scene calibration vector; no temporal semantics asserted",
+                "status": "CUSTOM_RECONSTRUCTION_DEVIATION"
+              }
+            ]
+          }
+        },
+        "hubert_native_and_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 0.237,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    32,
+                    768
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "array": {
+                  "shape": [
+                    32
+                  ],
+                  "dtype": "bool"
+                }
+              },
+              {
+                "checkpoint": "facebook/hubert-base-ls960",
+                "native_shape": [
+                  533,
+                  768
+                ],
+                "mapping": "midpoint-bin mean pooling on the shared source-video grid",
+                "checkpoint_loading": "PASS",
+                "weight_norm_compatibility": "project-local legacy weight_norm construction for Torch 2.8 + Transformers 4.38"
+              }
+            ]
+          }
+        },
+        "shared_interval_synchrony": {
+          "status": "PASS",
+          "elapsed_seconds": 0.002,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    8,
+                    8
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "array": {
+                  "shape": [
+                    8,
+                    8
+                  ],
+                  "dtype": "bool"
+                }
+              },
+              -0.13735952973365784
+            ]
+          }
+        },
+        "write_pilot_h5": {
+          "status": "PASS",
+          "elapsed_seconds": 0.003,
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/h5/videoN001_recon_v1.h5"
+          }
+        }
+      },
+      "contract": {
+        "local_features": [
+          8,
+          32,
+          768
+        ],
+        "local_time_mask": [
+          8,
+          32
+        ],
+        "agent_mask": [
+          8
+        ],
+        "audio_features": [
+          32,
+          768
+        ],
+        "audio_time_mask": [
+          32
+        ],
+        "global_scene": [
+          768
+        ],
+        "gamma": -0.13735952973365784,
+        "selected_track_ids": [
+          1,
+          11,
+          14,
+          13,
+          8,
+          2,
+          6,
+          5
+        ],
+        "text": "disabled",
+        "l_sat": "disabled"
+      }
+    },
+    {
+      "video_id": "videoS001",
+      "class_name": "Negative",
+      "canonical_label": 2,
+      "stages": {
+        "locate": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/media/videoS001.mp4",
+            "bytes": 22422192
+          }
+        },
+        "ffprobe": {
+          "status": "PASS",
+          "elapsed_seconds": 0.045,
+          "result": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "mpeg4",
+                "codec_long_name": "MPEG-4 part 2",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "nb_frames": "443"
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "codec_type": "audio",
+                "sample_rate": "44100",
+                "channels": 2,
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "nb_frames": "639"
+              }
+            ],
+            "format": {
+              "duration": "14.837551",
+              "size": "22422192"
+            }
+          }
+        },
+        "decode_6hz": {
+          "status": "PASS",
+          "elapsed_seconds": 1.227,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    89,
+                    1080,
+                    1920,
+                    3
+                  ],
+                  "dtype": "uint8"
+                }
+              },
+              {
+                "policy": "step=max(1, round(source_fps / 6)); retain frames whose zero-based index modulo step is zero",
+                "source_fps": 30.0,
+                "target_fps": 6,
+                "step": 5,
+                "decoded_frame_count": 443,
+                "sampled_frame_count": 89,
+                "first_bgr_shape": [
+                  1080,
+                  1920,
+                  3
+                ]
+              }
+            ]
+          }
+        },
+        "shared_t32_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "timestamps": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "float64"
+              }
+            },
+            "source_frames": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "int64"
+              }
+            },
+            "valid": {
+              "array": {
+                "shape": [
+                  32
+                ],
+                "dtype": "bool"
+              }
+            },
+            "duration_seconds": {
+              "array": {
+                "shape": [],
+                "dtype": "float64"
+              }
+            }
+          }
+        },
+        "track": {
+          "status": "PASS",
+          "elapsed_seconds": 0.585,
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              9,
+              10,
+              12,
+              16,
+              21,
+              24,
+              26,
+              28,
+              29,
+              30,
+              37,
+              39,
+              42,
+              43,
+              45,
+              46,
+              48,
+              49,
+              51,
+              53,
+              57,
+              58,
+              59,
+              61,
+              62,
+              63,
+              65,
+              69,
+              71,
+              72,
+              74,
+              75,
+              76,
+              77,
+              81
+            ],
+            "track_lengths": {
+              "1": 16,
+              "2": 16,
+              "3": 11,
+              "4": 8,
+              "5": 1,
+              "9": 1,
+              "10": 16,
+              "12": 2,
+              "16": 16,
+              "21": 48,
+              "24": 19,
+              "26": 54,
+              "28": 3,
+              "29": 4,
+              "30": 49,
+              "37": 39,
+              "39": 49,
+              "42": 3,
+              "43": 5,
+              "45": 1,
+              "46": 4,
+              "48": 3,
+              "49": 2,
+              "51": 5,
+              "53": 41,
+              "57": 35,
+              "58": 23,
+              "59": 12,
+              "61": 32,
+              "62": 11,
+              "63": 9,
+              "65": 11,
+              "69": 4,
+              "71": 4,
+              "72": 7,
+              "74": 6,
+              "75": 6,
+              "76": 6,
+              "77": 6,
+              "81": 2
+            },
+            "mean_detection_confidence": {
+              "1": 0.7989516928792,
+              "2": 0.6660737954080105,
+              "3": 0.6490875049070879,
+              "4": 0.6478181108832359,
+              "5": 0.5352761149406433,
+              "9": 0.5628381371498108,
+              "10": 0.7912843897938728,
+              "12": 0.5777036845684052,
+              "16": 0.7632837146520615,
+              "21": 0.7753473644455274,
+              "24": 0.7028122481546903,
+              "26": 0.7807479445581083,
+              "28": 0.5325407981872559,
+              "29": 0.5944656580686569,
+              "30": 0.7765410992563987,
+              "37": 0.7887264001063812,
+              "39": 0.9013787094427614,
+              "42": 0.6928196549415588,
+              "43": 0.8416294693946839,
+              "45": 0.6594828963279724,
+              "46": 0.6347166001796722,
+              "48": 0.7592891653378805,
+              "49": 0.6216708719730377,
+              "51": 0.6847296595573426,
+              "53": 0.9025644529156569,
+              "57": 0.7910703880446298,
+              "58": 0.7383944340374159,
+              "59": 0.6877029836177826,
+              "61": 0.8106808234006166,
+              "62": 0.8165341344746676,
+              "63": 0.7235599491331313,
+              "65": 0.5585786375132474,
+              "69": 0.5529395341873169,
+              "71": 0.6540221273899078,
+              "72": 0.568106472492218,
+              "74": 0.738320122162501,
+              "75": 0.6803805828094482,
+              "76": 0.7030369937419891,
+              "77": 0.5490424831708273,
+              "81": 0.6567392349243164
+            }
+          }
+        },
+        "trajectory_smoothing": {
+          "status": "PASS",
+          "elapsed_seconds": 0.002,
+          "result": {
+            "track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              9,
+              10,
+              12,
+              16,
+              21,
+              24,
+              26,
+              28,
+              29,
+              30,
+              37,
+              39,
+              42,
+              43,
+              45,
+              46,
+              48,
+              49,
+              51,
+              53,
+              57,
+              58,
+              59,
+              61,
+              62,
+              63,
+              65,
+              69,
+              71,
+              72,
+              74,
+              75,
+              76,
+              77,
+              81
+            ],
+            "track_lengths": {
+              "1": 16,
+              "2": 16,
+              "3": 11,
+              "4": 8,
+              "5": 1,
+              "9": 1,
+              "10": 16,
+              "12": 2,
+              "16": 16,
+              "21": 48,
+              "24": 19,
+              "26": 54,
+              "28": 3,
+              "29": 4,
+              "30": 49,
+              "37": 39,
+              "39": 49,
+              "42": 3,
+              "43": 5,
+              "45": 1,
+              "46": 4,
+              "48": 3,
+              "49": 2,
+              "51": 5,
+              "53": 41,
+              "57": 35,
+              "58": 23,
+              "59": 12,
+              "61": 32,
+              "62": 11,
+              "63": 9,
+              "65": 11,
+              "69": 4,
+              "71": 4,
+              "72": 7,
+              "74": 6,
+              "75": 6,
+              "76": 6,
+              "77": 6,
+              "81": 2
+            }
+          }
+        },
+        "k8_custom_selection": {
+          "status": "PASS",
+          "elapsed_seconds": 0.0,
+          "result": {
+            "status": "CUSTOM_RECONSTRUCTION_DEVIATION",
+            "rule": "descending observed duration, then descending mean detection confidence, then ascending numeric track ID",
+            "observed_track_ids": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              9,
+              10,
+              12,
+              16,
+              21,
+              24,
+              26,
+              28,
+              29,
+              30,
+              37,
+              39,
+              42,
+              43,
+              45,
+              46,
+              48,
+              49,
+              51,
+              53,
+              57,
+              58,
+              59,
+              61,
+              62,
+              63,
+              65,
+              69,
+              71,
+              72,
+              74,
+              75,
+              76,
+              77,
+              81
+            ],
+            "observed_track_lengths": {
+              "1": 16,
+              "2": 16,
+              "3": 11,
+              "4": 8,
+              "5": 1,
+              "9": 1,
+              "10": 16,
+              "12": 2,
+              "16": 16,
+              "21": 48,
+              "24": 19,
+              "26": 54,
+              "28": 3,
+              "29": 4,
+              "30": 49,
+              "37": 39,
+              "39": 49,
+              "42": 3,
+              "43": 5,
+              "45": 1,
+              "46": 4,
+              "48": 3,
+              "49": 2,
+              "51": 5,
+              "53": 41,
+              "57": 35,
+              "58": 23,
+              "59": 12,
+              "61": 32,
+              "62": 11,
+              "63": 9,
+              "65": 11,
+              "69": 4,
+              "71": 4,
+              "72": 7,
+              "74": 6,
+              "75": 6,
+              "76": 6,
+              "77": 6,
+              "81": 2
+            },
+            "mean_detection_confidence": {
+              "1": 0.7989516928792,
+              "2": 0.6660737954080105,
+              "3": 0.6490875049070879,
+              "4": 0.6478181108832359,
+              "5": 0.5352761149406433,
+              "9": 0.5628381371498108,
+              "10": 0.7912843897938728,
+              "12": 0.5777036845684052,
+              "16": 0.7632837146520615,
+              "21": 0.7753473644455274,
+              "24": 0.7028122481546903,
+              "26": 0.7807479445581083,
+              "28": 0.5325407981872559,
+              "29": 0.5944656580686569,
+              "30": 0.7765410992563987,
+              "37": 0.7887264001063812,
+              "39": 0.9013787094427614,
+              "42": 0.6928196549415588,
+              "43": 0.8416294693946839,
+              "45": 0.6594828963279724,
+              "46": 0.6347166001796722,
+              "48": 0.7592891653378805,
+              "49": 0.6216708719730377,
+              "51": 0.6847296595573426,
+              "53": 0.9025644529156569,
+              "57": 0.7910703880446298,
+              "58": 0.7383944340374159,
+              "59": 0.6877029836177826,
+              "61": 0.8106808234006166,
+              "62": 0.8165341344746676,
+              "63": 0.7235599491331313,
+              "65": 0.5585786375132474,
+              "69": 0.5529395341873169,
+              "71": 0.6540221273899078,
+              "72": 0.568106472492218,
+              "74": 0.738320122162501,
+              "75": 0.6803805828094482,
+              "76": 0.7030369937419891,
+              "77": 0.5490424831708273,
+              "81": 0.6567392349243164
+            },
+            "selected_track_ids": [
+              26,
+              39,
+              30,
+              21,
+              53,
+              37,
+              57,
+              61
+            ],
+            "selected_count": 8
+          }
+        },
+        "dino_native_and_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 3.427,
+          "result": {
+            "tuple": [
+              {
+                "26": {
+                  "array": {
+                    "shape": [
+                      54,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "39": {
+                  "array": {
+                    "shape": [
+                      49,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "30": {
+                  "array": {
+                    "shape": [
+                      49,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "21": {
+                  "array": {
+                    "shape": [
+                      48,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "53": {
+                  "array": {
+                    "shape": [
+                      41,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "37": {
+                  "array": {
+                    "shape": [
+                      39,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "57": {
+                  "array": {
+                    "shape": [
+                      35,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                },
+                "61": {
+                  "array": {
+                    "shape": [
+                      32,
+                      768
+                    ],
+                    "dtype": "float32"
+                  }
+                }
+              },
+              {
+                "26": {
+                  "array": {
+                    "shape": [
+                      54
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "39": {
+                  "array": {
+                    "shape": [
+                      49
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "30": {
+                  "array": {
+                    "shape": [
+                      49
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "21": {
+                  "array": {
+                    "shape": [
+                      48
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "53": {
+                  "array": {
+                    "shape": [
+                      41
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "37": {
+                  "array": {
+                    "shape": [
+                      39
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "57": {
+                  "array": {
+                    "shape": [
+                      35
+                    ],
+                    "dtype": "float64"
+                  }
+                },
+                "61": {
+                  "array": {
+                    "shape": [
+                      32
+                    ],
+                    "dtype": "float64"
+                  }
+                }
+              },
+              {
+                "checkpoint": "facebook/dinov2-base",
+                "native_feature_count": 347,
+                "native_shape": [
+                  347,
+                  768
+                ]
+              }
+            ]
+          }
+        },
+        "ffmpeg_pcm": {
+          "status": "PASS",
+          "elapsed_seconds": 0.131,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    237401
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "command": [
+                  "ffmpeg",
+                  "-y",
+                  "-v",
+                  "error",
+                  "-i",
+                  "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/media/videoS001.mp4",
+                  "-ac",
+                  "1",
+                  "-ar",
+                  "16000",
+                  "-c:a",
+                  "pcm_s16le",
+                  "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/pcm/videoS001.wav"
+                ],
+                "sample_rate": 16000,
+                "channels": 1,
+                "samples": 237401,
+                "sha256": "d15f568d905daccf8b6ae96bdefccac2b071c3e6af7c5fa1b03f3b52dc79b2cc"
+              }
+            ]
+          }
+        },
+        "videomaev2_scene": {
+          "status": "PASS",
+          "elapsed_seconds": 2.803,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    768
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "checkpoint": "OpenGVLab/VideoMAEv2-Base",
+                "input_indices_at_6hz": [
+                  0,
+                  5,
+                  11,
+                  17,
+                  23,
+                  29,
+                  35,
+                  41,
+                  46,
+                  52,
+                  58,
+                  64,
+                  70,
+                  76,
+                  82,
+                  88
+                ],
+                "raw_output_shape": [
+                  1,
+                  768
+                ],
+                "pooling": "mean over non-feature output axes to a single 768-D scene calibration vector; no temporal semantics asserted",
+                "status": "CUSTOM_RECONSTRUCTION_DEVIATION"
+              }
+            ]
+          }
+        },
+        "hubert_native_and_grid": {
+          "status": "PASS",
+          "elapsed_seconds": 0.235,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    32,
+                    768
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "array": {
+                  "shape": [
+                    32
+                  ],
+                  "dtype": "bool"
+                }
+              },
+              {
+                "checkpoint": "facebook/hubert-base-ls960",
+                "native_shape": [
+                  741,
+                  768
+                ],
+                "mapping": "midpoint-bin mean pooling on the shared source-video grid",
+                "checkpoint_loading": "PASS",
+                "weight_norm_compatibility": "project-local legacy weight_norm construction for Torch 2.8 + Transformers 4.38"
+              }
+            ]
+          }
+        },
+        "shared_interval_synchrony": {
+          "status": "PASS",
+          "elapsed_seconds": 0.005,
+          "result": {
+            "tuple": [
+              {
+                "array": {
+                  "shape": [
+                    8,
+                    8
+                  ],
+                  "dtype": "float32"
+                }
+              },
+              {
+                "array": {
+                  "shape": [
+                    8,
+                    8
+                  ],
+                  "dtype": "bool"
+                }
+              },
+              0.1943589746952057
+            ]
+          }
+        },
+        "write_pilot_h5": {
+          "status": "PASS",
+          "elapsed_seconds": 0.003,
+          "result": {
+            "path": "/teamspace/studios/this_studio/VIBE-Disentangling-Social-Dynamics-via-Kinematics-Informed-Variational-Inference/data/phase6_reconstruction_pilot/h5/videoS001_recon_v1.h5"
+          }
+        }
+      },
+      "contract": {
+        "local_features": [
+          8,
+          32,
+          768
+        ],
+        "local_time_mask": [
+          8,
+          32
+        ],
+        "agent_mask": [
+          8
+        ],
+        "audio_features": [
+          32,
+          768
+        ],
+        "audio_time_mask": [
+          32
+        ],
+        "global_scene": [
+          768
+        ],
+        "gamma": 0.1943589746952057,
+        "selected_track_ids": [
+          26,
+          39,
+          30,
+          21,
+          53,
+          37,
+          57,
+          61
+        ],
+        "text": "disabled",
+        "l_sat": "disabled"
+      }
+    }
+  ],
+  "model_validation": {
+    "status": "PASS",
+    "logits": [
+      3,
+      3
+    ],
+    "losses": {
+      "total": 9150.580078125,
+      "hce": 1.1146217584609985,
+      "kl": 9149.4658203125,
+      "sat": 0.0,
+      "ortho": 1.3155079614080023e-05
+    },
+    "optimizer_step": "PASS",
+    "text_ablation": true
+  },
+  "finished_utc": "2026-09-28T18:54:55Z"
+}

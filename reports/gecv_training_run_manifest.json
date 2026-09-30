@@ -1,0 +1,67 @@
+{
+  "protocol": "VIBE-GECV-RECON-v1.0",
+  "run_scope": "Completed 30-epoch reconstruction training run; provenance assembled read-only after completion.",
+  "code": {
+    "git_head": "20c691e606f835382783cb74bdff252410aa3f94",
+    "working_tree_clean": false,
+    "provenance_warning": "The completed reconstruction implementation was in a dirty working tree. Git HEAD alone does not identify every implementation file; the frozen config, split, checkpoint, and this provenance package are therefore recorded explicitly."
+  },
+  "configuration": {
+    "path": "config/train_gecv_reconstruction_v1.yaml",
+    "sha256": "7d3b3978025120eccef4a77a9d9685cde951a971394813f69a4ec2c74e269b39",
+    "embedded_in_checkpoint_last": true
+  },
+  "split": {
+    "path": "data/manifests/gecv_reconstruction_v1_split_seed20260928.json",
+    "sha256": "75691440c5982cc9efa0311c9b8ba68139f318ba82858e42e3cacbd4271ec823",
+    "source_corpus_hash": "d84c8fed0f72de4b9a485e3502d41c107a2b9c0c89ff000f5b880177448854b9",
+    "seed": 20260928,
+    "counts": {"train": 282, "validation": 61, "test": 61},
+    "official_paper_split": false,
+    "smoke_only_ids_excluded": ["videoH001", "videoN001", "videoS001"],
+    "failed_id_excluded": "videoH116"
+  },
+  "checkpoint_selection": {
+    "selection_metric": "validation macro_f1",
+    "best_checkpoint_path": "checkpoints/gecv_reconstruction_v1/model_best.pth",
+    "best_checkpoint_sha256": "3955147be0a5dea33ea0d2734c648508f50e2da72af9899bbb1e02efa4d8551a",
+    "best_epoch": 9,
+    "best_validation_macro_f1": 0.9512789711701527,
+    "test_checkpoint_path": "checkpoints/gecv_reconstruction_v1/model_best.pth",
+    "test_checkpoint_selection_verified": true,
+    "checkpoint_last_path": "checkpoints/gecv_reconstruction_v1/checkpoint_last.pth",
+    "checkpoint_last_epoch": 30
+  },
+  "held_out_test": {
+    "sample_count": 61,
+    "accuracy": 0.9344262295081968,
+    "macro_f1": 0.9183860938383267,
+    "weighted_f1": 0.9337126653013188,
+    "confusion_matrix": [[30, 0, 0], [1, 14, 1], [0, 2, 13]],
+    "class_order": ["Positive", "Neutral", "Negative"]
+  },
+  "environment": {
+    "training_gpu": {"name": "NVIDIA L4", "vram_gb": 22.03, "evidence": "reports/gecv_gpu_smoke_test.json"},
+    "python": "3.12.11",
+    "pytorch": "2.8.0+cu128",
+    "torch_cuda_build": "12.8",
+    "packages_from_verified_environment_report": {
+      "opencv": "4.10.0", "ultralytics": "8.4.112", "transformers": "5.17.0", "librosa": "0.10.2.post1", "soundfile": "0.14.0", "pyav": "18.1.0", "torchaudio": "2.8.0+cu128", "h5py": "3.16.0", "numpy": "1.26.4", "pandas": "2.1.4", "scipy": "1.11.4", "scikit_learn": "1.3.2", "matplotlib": "3.8.2", "ffmpeg": "8.0.1"
+    },
+    "package_provenance_note": "Versions are taken from the verified Phase 5B environment report and the L4 GPU smoke report. A full pip/conda freeze was not captured at training completion."
+  },
+  "scientific_status": {
+    "classification": "reconstruction result",
+    "official_vibe_paper_result": false,
+    "official_paper_gecv_split": false,
+    "text_disabled": true,
+    "semantic_alignment_loss_disabled": true,
+    "custom_reconstruction_protocol": true,
+    "not_directly_comparable_to_reported_paper_metric": true
+  },
+  "metrics_provenance": {
+    "epoch_metrics": "reports/gecv_training_metrics_epoch1_30.json",
+    "event_file": "logs/gecv_reconstruction_v1/events.out.tfevents.1790629855.cs-01m3mx7c3cfne79zx1ekjwbbm3.10298.0",
+    "terminal_transcript": "not available locally; no reports/gecv_training_terminal.log was created"
+  }
+}

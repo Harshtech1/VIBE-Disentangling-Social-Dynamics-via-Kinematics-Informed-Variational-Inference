@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+*.env
+*.key
+*.pem
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Large raw/processed data
+*.tar.xz
+*.tar.gz
+*.mp4
+*.h5
+*.hdf5
+
+# Runtime/cache
+.cache/
+tmp/
+temp/
+
+# Experiment runtime artifacts
+wandb/
+mlruns/
+
+# Local training outputs and extracted pilot media
+checkpoints/
+logs/
+data/phase6_reconstruction_pilot/

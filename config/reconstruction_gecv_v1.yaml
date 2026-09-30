@@ -1,0 +1,12 @@
+# VIBE-GECV-RECON-v1.0 template. This file does not authorize training.
+reconstruction_mode: true
+# Interface adapter only: preserves extraction HDF5 names and never creates env_feat.
+dataset_schema: gecv_reconstruction_v1
+reconstruction_gamma_source: stored
+enable_sat: false
+lambda_sat: 0.0
+max_k: 8
+max_t: 32
+input_dim: 768
+latent_dim: 512
+num_classes: 3

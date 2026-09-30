@@ -1,0 +1,116 @@
+{
+  "protocol": "VIBE-GECV-RECON-v1.0",
+  "audit_scope": "Post-training read-only audit of the completed 30-epoch reconstruction experiment.",
+  "status": "NEEDS_REVIEW",
+  "status_reason": "All directly inspectable split, artifact, checkpoint-selection, configuration, label, and reconstruction-interface checks pass. The terminal training/validation/test transcript was not persisted as a dedicated training log in the repository, so per-step runtime diagnostics (NaN/Inf messages, gradient-norm history, and optimizer-step messages) cannot be independently replayed from a log artifact. This is a traceability warning, not evidence of a failed run.",
+  "scientific_status": {
+    "classification": "reconstruction result",
+    "official_vibe_paper_result": false,
+    "official_gecv_paper_split": false,
+    "direct_comparison_to_reported_paper_metric": false,
+    "reason": "The manifest identifies this as a deterministic VIBE-GECV-RECON-v1.0 split and the approved reconstruction contract uses custom global-scene, text-off, temporal, mask, synchrony, and K-selection decisions."
+  },
+  "checkpoint_selection": {
+    "selection_metric": "validation macro_f1",
+    "best_validation_macro_f1": 0.9512789711701527,
+    "best_checkpoint": "checkpoints/gecv_reconstruction_v1/model_best.pth",
+    "selected_epoch": 9,
+    "evidence": [
+      "checkpoint_last.pth records epoch=30, best_metric_name=macro_f1, best_metric=0.9512789711701527.",
+      "model_best.pth is tensor-identical to model_ep9_acc0.9508_f10.9509.pth.",
+      "model_best.pth is not tensor-identical to model_ep30_acc0.9508_f10.9509.pth."
+    ],
+    "test_checkpoint": "model_best.pth",
+    "test_selection_path": "trainer/train_model.py: after the 30-epoch loop, torch.load(self.ckpt_dir / 'model_best.pth'), self.model.load_state_dict(best_ckpt), then self.validate(epochs, self.test_loader, mode='Test').",
+    "selection_path": "trainer/train_model.py: validation metrics are computed each epoch; only a strict improvement in metrics['macro_f1'] writes model_best.pth. checkpoint_last.pth is written after selection-state update."
+  },
+  "split_integrity": {
+    "manifest": "data/manifests/gecv_reconstruction_v1_split_seed20260928.json",
+    "seed": 20260928,
+    "official_paper_split": false,
+    "counts": {"train": 282, "validation": 61, "test": 61},
+    "unique_ids": {"train": 282, "validation": 61, "test": 61},
+    "pairwise_overlap": {"train_validation": [], "train_test": [], "validation_test": []},
+    "smoke_only_ids": ["videoH001", "videoN001", "videoS001"],
+    "smoke_only_intersection": {"train": [], "validation": [], "test": []},
+    "failed_ids": ["videoH116"],
+    "failed_id_intersection": {"train": [], "validation": [], "test": []},
+    "source_corpus_hash": "d84c8fed0f72de4b9a485e3502d41c107a2b9c0c89ff000f5b880177448854b9"
+  },
+  "label_integrity": {
+    "canonical_mapping": {"Positive": 0, "Neutral": 1, "Negative": 2},
+    "hdf5_label_location": "HDF5 attribute 'label'",
+    "train": {"expected": {"0": 139, "1": 74, "2": 69}, "observed_hdf5": {"0": 139, "1": 74, "2": 69}, "mismatches": []},
+    "validation": {"expected": {"0": 30, "1": 16, "2": 15}, "observed_hdf5": {"0": 30, "1": 16, "2": 15}, "mismatches": []},
+    "test": {"expected": {"0": 30, "1": 16, "2": 15}, "observed_hdf5": {"0": 30, "1": 16, "2": 15}, "mismatches": []}
+  },
+  "data_leakage_audit": {
+    "duplicate_source_ids_across_splits": false,
+    "test_loader_usage": "Constructed from the frozen test list but not iterated in the training loop. It is passed only to the final self.validate(..., mode='Test') call after model_best.pth is reloaded.",
+    "validation_usage": "Validation metrics are used for checkpoint selection only (best_metric=macro_f1).",
+    "test_used_for_hyperparameter_or_checkpoint_selection": false,
+    "code_evidence": "trainer/train_model.py uses self.val_loader inside the epoch loop; self.test_loader occurs only after that loop and after best checkpoint reload."
+  },
+  "checkpoint_artifacts": {
+    "directory": "checkpoints/gecv_reconstruction_v1",
+    "per_epoch_checkpoint_count": 30,
+    "relevant_files": [
+      {"name": "model_best.pth", "bytes": 65422261, "mtime_utc": "2026-09-28T21:11:29Z", "sha256": "3955147be0a5dea33ea0d2734c648508f50e2da72af9899bbb1e02efa4d8551a", "loads_on_cpu": true},
+      {"name": "model_ep9_acc0.9508_f10.9509.pth", "bytes": 65424161, "mtime_utc": "2026-09-28T21:11:29Z", "tensor_identical_to_model_best": true},
+      {"name": "model_ep30_acc0.9508_f10.9509.pth", "bytes": 65424263, "mtime_utc": "2026-09-28T21:12:41Z", "tensor_identical_to_model_best": false},
+      {"name": "checkpoint_last.pth", "bytes": 189703949, "mtime_utc": "2026-09-28T21:12:42Z", "epoch": 30, "best_metric": 0.9512789711701527, "best_metric_name": "macro_f1"}
+    ],
+    "checkpoint_last_finiteness": {"model_state_tensor_count": 96, "optimizer_tensor_count": 261, "nonfinite_model_tensors": [], "nonfinite_optimizer_tensors": []}
+  },
+  "training_configuration": {
+    "config": "config/train_gecv_reconstruction_v1.yaml",
+    "checkpoint_last_embedded_config_matches": {
+      "batch_size": 16,
+      "epochs": 30,
+      "lr": 0.0001,
+      "optimizer": "AdamW",
+      "weight_decay": 0.001,
+      "scheduler": "warmup_cosine",
+      "warmup_epochs": 3,
+      "latent_dim": 512,
+      "attention_heads": 8,
+      "transformer_depth": 2,
+      "dropout": 0.3,
+      "mixup_alpha": 0.2,
+      "lambda_ortho": 0.1,
+      "enable_sat": false,
+      "lambda_sat": 0.0,
+      "max_k": 8,
+      "max_t": 32,
+      "reconstruction_gamma_source": "stored"
+    },
+    "scheduler_last_state": {"epoch": 30, "base_lr": 0.0001, "total_epochs": 30, "warmup_epochs": 3, "eta_min": 0.0}
+  },
+  "reconstruction_contract": {
+    "dataset_schema": "gecv_reconstruction_v1",
+    "local_features": "HDF5 local_features [8,32,768] -> local_p [B,8,32,768]",
+    "local_time_mask": "HDF5 local_time_mask [8,32] -> model local_time_mask",
+    "agent_mask": "HDF5 agent_mask [8] -> model agent_mask",
+    "audio": "HDF5 audio_features [32,768] is explicitly adapted to audio_seq [B,32,768]; audio_time_mask is preserved.",
+    "global": "HDF5 global_scene [768] is explicitly passed as global_v [B,768], a single scene-calibration vector; it is not an asserted temporal global sequence and is not copied into env_feat.",
+    "environment_feature": "env_feat is None. model/vibe_model.py documents it as retained legacy-call compatibility and does not consume it.",
+    "synchrony": "HDF5 physics_sync is retained as sync_mat provenance. Stored HDF5 scalar gamma is selected by reconstruction_gamma_source=stored and reshaped to [B,1,1] for the model.",
+    "text_and_semantic_loss": "text_anch=None; enable_sat=false; lambda_sat=0.0; VIBE_Loss returns L_sat=0."
+  },
+  "test_result_traceability": {
+    "reported_test_sample_count": 61,
+    "confusion_matrix": [[30, 0, 0], [1, 14, 1], [0, 2, 13]],
+    "metrics_recomputed_from_matrix": {"accuracy": 0.9344262295081968, "macro_f1": 0.9183860938383267, "weighted_f1": 0.9337126653013188},
+    "reported_values": {"accuracy": 0.9344, "macro_f1": 0.9184, "weighted_f1": 0.9337},
+    "result": "PASS: the supplied confusion matrix sums to exactly 61 and reproduces the supplied rounded held-out test metrics."
+  },
+  "loss_training_sanity": {
+    "checkpoint_completion_evidence": "checkpoint_last.pth records epoch 30 and includes model, optimizer, and scheduler state.",
+    "saved_state_finite": true,
+    "gradient_control_code": "trainer/train_model.py applies torch.nn.utils.clip_grad_norm_(..., grad_clip=1.0) before optimizer.step().",
+    "runtime_log_findings": "No dedicated completed training console log was found under logs/. The available logs/gecv_reconstruction_v1.log is an extraction-status log, not the 30-epoch trainer transcript.",
+    "unverified_without_terminal_log": ["per-step NaN/Inf messages", "gradient-norm history", "optimizer-step messages", "checkpoint-save console messages", "absence of transient exceptions"],
+    "observed_warning": "This is a traceability limitation only; no corrupted/non-finite saved state was found."
+  },
+  "conclusion": "NEEDS_REVIEW: retain/archive the complete trainer terminal transcript (or a structured epoch-metrics artifact) alongside these checkpoints. After that provenance gap is closed, the inspected completed reconstruction run passes the requested code/data/split/checkpoint integrity checks. Its held-out test result remains a VIBE-GECV-RECON-v1.0 reconstruction result, not an official VIBE paper result."
+}

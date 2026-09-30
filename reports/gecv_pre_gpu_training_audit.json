@@ -1,0 +1,195 @@
+{
+  "status": "BLOCKED",
+  "scope": "Static pre-GPU audit only. No extraction, HDF5 modification, split creation, GPU use, or training was performed.",
+  "split_audit": {
+    "processable_corpus": {
+      "total_hdf5": 407,
+      "class_counts": {
+        "Positive": 200,
+        "Neutral": 107,
+        "Negative": 100
+      },
+      "excluded_source": {
+        "source_id": "videoH116",
+        "reason": "TRACKING_FAILED: no ByteTrack persons"
+      }
+    },
+    "current_trainer_behavior": {
+      "implementation": "trainer/train_model.py:34 calls create_group_split; dataloading/vibe_dataset.py:217 searches <data_root>/train/*_vibe.h5 after random.shuffle without a seed. trainer/train_model.py:62 searches <data_root>/val/*_vibe.h5 as test data.",
+      "configured_data_root": "./GECV_VIBE_PRIMITIVES",
+      "observed_layout": "GECV_VIBE_PRIMITIVES is absent; completed reconstruction files are flat at data/gecv_reconstruction_v1/*_recon_v1.h5.",
+      "current_split_counts": {
+        "train": 0,
+        "validation": 0,
+        "test": 0
+      },
+      "deterministic": false,
+      "video_level": "The legacy utility groups filename prefixes, but it cannot discover the reconstruction filenames or guarantee the intended corpus-level split.",
+      "stratified": false,
+      "test_isolated": false,
+      "official_paper_split_available": false,
+      "official_split_evidence": "docs/phase5e_reconstruction_decision_protocol.md records the official GECV split as unresolved; no usable official split manifest was found in the repository."
+    },
+    "smoke_samples": {
+      "ids": ["videoH001", "videoN001", "videoS001"],
+      "status": "They are present in the completed corpus. The current trainer cannot load that corpus, but any future all-file split would include them unless they are explicitly reserved/excluded.",
+      "recommendation": "Reserve these three as smoke_only and exclude them from train/validation/test metrics because they were used for interface-gate development."
+    },
+    "proposed_reconstruction_split": {
+      "status": "PROPOSAL ONLY; not created by this audit",
+      "algorithm": "Deterministic per-class shuffle by source_id using NumPy SeedSequence(20260928), then allocate train/validation/test in a 70/15/15 ratio.",
+      "seed": 20260928,
+      "smoke_only": ["videoH001", "videoN001", "videoS001"],
+      "eligible_after_smoke_reservation": {
+        "total": 404,
+        "Positive": 199,
+        "Neutral": 106,
+        "Negative": 99
+      },
+      "exact_class_counts": {
+        "train": {"Positive": 139, "Neutral": 74, "Negative": 69, "total": 282},
+        "validation": {"Positive": 30, "Neutral": 16, "Negative": 15, "total": 61},
+        "test": {"Positive": 30, "Neutral": 16, "Negative": 15, "total": 61}
+      },
+      "manifest_filename": "data/manifests/gecv_reconstruction_v1_split_seed20260928.json",
+      "required_manifest_fields": ["protocol", "seed", "source_id", "path", "label", "split", "corpus_hash", "smoke_only_ids"]
+    }
+  },
+  "paper_vs_current_config": {
+    "evidence_note": "Paper target values below are the values supplied for this audit and echoed in README.md. Items absent from the paper-facing source are not inferred.",
+    "comparison": {
+      "epochs": {"paper": 30, "legacy_train_gecv": 30, "reconstruction_template": "absent", "status": "MATCH in legacy config; reconstruction template is not runnable"},
+      "batch_size": {"paper": 16, "legacy_train_gecv": 16, "reconstruction_template": "absent", "status": "MATCH in legacy config; reconstruction template is not runnable"},
+      "learning_rate": {"paper": "1e-4", "legacy_train_gecv": "1e-4", "reconstruction_template": "absent", "status": "MATCH in legacy config; reconstruction template is not runnable"},
+      "optimizer": {"paper": "AdamW", "legacy_train_gecv": "AdamW", "reconstruction_template": "trainer implementation uses AdamW", "status": "MATCH"},
+      "weight_decay": {"paper": "1e-3", "legacy_train_gecv": "1e-2", "reconstruction_template": "trainer default is 1e-2 when absent", "status": "MISMATCH"},
+      "scheduler": {"paper": "Cosine Annealing", "legacy_train_gecv": "ReduceLROnPlateau(mode=max, patience=3, factor=0.1)", "reconstruction_template": "same trainer implementation", "status": "MISMATCH"},
+      "warmup": {"paper": "3 epochs", "legacy_train_gecv": "absent", "reconstruction_template": "absent", "status": "MISSING"},
+      "latent_dimension": {"paper": 512, "legacy_train_gecv": 512, "reconstruction_template": 512, "status": "MATCH"},
+      "attention_heads": {"paper": 8, "implementation": "8 in CrossModalAttentionBlock and GammaGatedTransformer defaults", "status": "MATCH"},
+      "transformer_depth": {"paper": 2, "implementation": "2 in VIBE_Transformer GammaGatedTransformer construction", "status": "MATCH"},
+      "dropout": {"paper": 0.3, "implementation": "VIB 0.2; context gate 0.1; cross-modal attention/FFN 0.1; GammaGatedTransformer 0.1 plus stochastic depth 0.1; classifier 0.5", "status": "MISMATCH / not centrally configurable"},
+      "mixup": {"paper": 0.2, "legacy_train_gecv": 0.2, "reconstruction_template": "absent; trainer defaults to 0.2", "status": "MATCH only by legacy/default behavior; NumPy sampling has no seeded generator"},
+      "lambda_sat": {"paper": 0.5, "legacy_train_gecv": 0.5, "reconstruction": 0.0, "status": "INTENTIONAL CUSTOM RECONSTRUCTION DEVIATION: text is OFF"},
+      "lambda_ortho": {"paper": 0.1, "legacy_train_gecv": 0.1, "reconstruction_template": "absent; trainer default is 0.1", "status": "MATCH by default, but should be explicit in a runnable reconstruction config"},
+      "kl_term": {"paper": "not independently specified by the supplied target list", "implementation": "unweighted L_KL is added directly to total loss", "status": "IMPLEMENTATION FACT ONLY"},
+      "classes_and_label_order": {"paper": "three affect classes", "reconstruction": "Positive=0, Neutral=1, Negative=2", "loss": "same order at losses/loss_function.py:9-14", "status": "MATCH with canonical reconstruction contract"}
+    },
+    "reconstruction_config_status": "config/reconstruction_gecv_v1.yaml correctly sets reconstruction_mode, schema adapter, stored gamma, text OFF, and L_sat=0, but lacks data_root, log_dir, checkpoint_dir, batch_size, epochs, lr, optimizer settings, scheduler settings, and split-manifest support. It cannot be passed to trainer/train_model.py as a training config."
+  },
+  "tensor_flow": {
+    "hdf5": {
+      "local_features": "[B,8,32,768] float32",
+      "local_time_mask": "[B,8,32] bool",
+      "agent_mask": "[B,8] bool",
+      "audio_features": "[B,32,768] float32",
+      "audio_time_mask": "[B,32] bool",
+      "global_scene": "[B,768] float32",
+      "physics_sync": "[B,8,8] float32",
+      "gamma": "[B] scalar float32",
+      "labels": "[B] int64 attributes; Positive=0, Neutral=1, Negative=2"
+    },
+    "stages": [
+      {"stage": "Dataset compatibility adapter", "location": "dataloading/vibe_dataset.py:46-138", "input": "production HDF5", "output": "global_v [768], local_p [8,32,768], audio_seq [32,768], masks, sync_mat [8,8], scalar stored gamma, env_feat=None, text_anch=None", "masks": "validates local and audio masks; rejects a padded agent with valid local time", "gamma": "read from HDF5 when configured as stored", "global_scene": "used as global_v", "env_feat": "None", "physics_sync": "retained as sync_mat", "text": "OFF"},
+      {"stage": "Collate", "location": "dataloading/vibe_dataset.py:161-210", "input": "per-sample tensors", "output": "local_p [B,8,32,768], global_v [B,768], audio_seq [B,32,768], gamma [B,1,1], sync_mat [B,8,8]", "masks": "stacks agent/local/audio masks", "gamma": "stored scalar is reshaped to [B,1,1]", "global_scene": "already global_v", "env_feat": "None", "physics_sync": "batch provenance only", "text": "None"},
+      {"stage": "VIB", "location": "model/vibe_model.py:91-98; model/vib.py", "input": "local_p flattened [B*8*32,768]", "output": "z_aff/z_env/mu/logvar [B,8,32,512]", "masks": "local_time_mask zeros all four VIB outputs after encoding", "gamma": "not yet", "global_scene": "not here", "env_feat": "not read", "physics_sync": "not read", "text": "not used"},
+      {"stage": "Context injection", "location": "model/vibe_model.py:115; model/context_gate.py", "input": "z_aff/z_env [B,8,32,512]", "output": "z_aff_context [B,8,32,512]", "masks": "local mask applied again after gate", "gamma": "not used", "global_scene": "not used", "env_feat": "not used", "physics_sync": "not used", "text": "not used"},
+      {"stage": "Visual/audio fusion", "location": "model/vibe_model.py:118-121; model/learned_attenttion.py:37-48", "input": "visual [B,256,512], audio [B,32,512]", "output": "refined visual [B,256,512]", "masks": "local mask is visual self-attention key padding and output zeroing; audio mask is cross-attention key padding", "gamma": "not used", "global_scene": "not used", "env_feat": "not used", "physics_sync": "not used", "text": "not used"},
+      {"stage": "Agent aggregation", "location": "model/vibe_model.py:124-127", "input": "refined visual [B,32,8,512]", "output": "time sequence [B,32,512]", "masks": "masked mean over agents; temporal mask is local_time_mask.any(agent)", "gamma": "next stage", "global_scene": "style already prepared", "env_feat": "not used", "physics_sync": "not used", "text": "not used"},
+      {"stage": "Global scene conditioning and Gamma-Gated Transformer", "location": "model/vibe_model.py:70-88,128-131; model/gamma_transformer.py:21-74", "input": "global_v [B,768], gamma [B,1,1], time sequence [B,32,512]", "output": "style [B,64], scene_scale [B,1], gamma_prime [B,1,1], h_seq [B,32,512]", "masks": "temporal key padding and post-layer zeroing", "gamma": "gamma_prime=stored_gamma*scene_scale; AdaLN expands scalar gamma to 32 steps and modulates both layers", "global_scene": "global_v directly drives global_style_proj and scene_scaler", "env_feat": "not used", "physics_sync": "not directly used", "text": "not used"},
+      {"stage": "Pooling and classifier", "location": "model/vibe_model.py:134-148", "input": "h_seq [B,32,512], temporal mask, gamma_prime [B,1,1]", "output": "h_final [B,512], fusion [B,513], logits [B,3]", "masks": "temporal_pool receives temporal mask", "gamma": "mean scalar is concatenated to h_final", "global_scene": "only via style/scale", "env_feat": "not used", "physics_sync": "not directly used", "text": "not used"}
+    ]
+  },
+  "gamma_path": {
+    "status": "CONFIRMED",
+    "path": [
+      "HDF5 gamma scalar",
+      "VIBEDataset sample_gamma at dataloading/vibe_dataset.py:111-116",
+      "vibe_collate_fn gamma [B,1,1] at lines 184-189",
+      "VIBETrainer forward argument at trainer/train_model.py:127",
+      "gamma_prime=gamma*scene_scale at model/vibe_model.py:128",
+      "GammaGatedTransformer at model/vibe_model.py:131",
+      "DecoupledAdaLN expands [B,1,1] to [B,32,1] and applies gamma-dependent scale at model/gamma_transformer.py:31-49",
+      "gamma scalar also concatenated with h_final at model/vibe_model.py:145-148"
+    ],
+    "physics_sync_note": "The matrix is retained as batch sync_mat but is not passed to the model. The stored gamma is the model-visible synchrony signal."
+  },
+  "global_scene_path": {
+    "status": "CONFIRMED",
+    "path": [
+      "HDF5 global_scene [768]",
+      "dataset global_v [768] at dataloading/vibe_dataset.py:46-51",
+      "collate global_v [B,768] at line 165",
+      "model direct vector branch at model/vibe_model.py:70-71",
+      "global_style_proj [B,768]->[B,64] and scene_scaler [B,64]->[B,1] at lines 87-88"
+    ],
+    "temporal_claim": "None. The reconstruction code does not reinterpret global_scene as a temporal sequence."
+  },
+  "mask_path": {
+    "local_time_mask": "Dataset validates it; model zeros VIB outputs (vibe_model.py:94-98), uses it for visual attention/output masking (118-121), masked agent aggregation/temporal mask (125-127), temporal attention key padding/post-layer masking (gamma_transformer.py:65-74), and temporal pooling (134).",
+    "agent_mask": "Dataset validates that a padded agent has no valid local time (vibe_dataset.py:107-108). In the actual passed-mask path it is not independently consumed by later modules; local_time_mask is the operative model mask. It is only used to construct a fallback local_time_mask when one is absent (vibe_model.py:62-65).",
+    "audio_time_mask": "Passed as cross-attention key-padding mask at vibe_model.py:121 and learned_attenttion.py:40-42. It does not prevent audio_proj from projecting padded values, but key/value positions are excluded by attention.",
+    "real_data_test": "The prior CPU integration test mutated 368 invalid local positions and observed max logit difference 0.0. H001/N001/S001 had 0 invalid audio bins, so audio masked-value mutation was not exercised."
+  },
+  "loss_audit": {
+    "location": "losses/loss_function.py:35-71",
+    "L_HCE": "Hierarchical label-smoothed cross entropy using Positive=0, Neutral=1, Negative=2.",
+    "L_KL": "Unweighted VIB-affective KL sum divided by batch size.",
+    "L_ortho": "Mean squared cosine similarity between flattened z_aff and z_env, weighted by lambda_ortho.",
+    "L_sat": "Exactly zero when enable_sat=False; text_anch is None and no captions/text are fabricated.",
+    "total": "L_HCE + L_KL + lambda_ortho*L_ortho + lambda_sat*L_sat.",
+    "reconstruction_requirement": "A runnable reconstruction config must explicitly set enable_sat=false, lambda_sat=0.0, and lambda_ortho=0.1."
+  },
+  "leakage_audit": {
+    "feature_only_training": "PASS in intended data path: VIBEDataset opens HDF5 tensors only; trainer does not import or invoke extraction code.",
+    "raw_video_reprocessing": "None in dataloading/vibe_dataset.py or trainer/train_model.py.",
+    "historical_legacy_hdf5": "The current configured root is absent. A future direct reconstruction manifest must point only to data/gecv_reconstruction_v1/*_recon_v1.h5 and reject paths outside it.",
+    "phase5_phase6_pilot_data": "Not reachable through the current legacy glob. A future manifest must exclude data/phase6_reconstruction_pilot/h5 and reserve H001/N001/S001 as smoke_only.",
+    "captions": "None; reconstruction HDF5 requires text_status=OFF and Dataset returns text_anch=None.",
+    "labels": "Dataset rejects label attributes outside 0/1/2."
+  },
+  "checkpoint_evaluation_audit": {
+    "checkpointing": "checkpoint_last.pth is overwritten each epoch. model_best.pth is written only when validation accuracy exceeds both best_acc=0.0 and save_threshold does not apply to this branch.",
+    "selection_then_test": "Conceptually yes: trainer loads model_best.pth after the epoch loop and then calls test validation. In the present layout test is empty/nonexistent.",
+    "failure_risk": "If no validation metric exceeds 0.0, model_best.pth is absent and final torch.load fails.",
+    "metrics": {
+      "accuracy": "computed for validation/test",
+      "f1": "weighted F1 only; macro F1 is absent",
+      "precision_recall": "classification_report prints them only on the test branch",
+      "validation_reporting": "The validation report/logging/confusion matrix branch is gated on nonempty text anchors, so it does not run for text-off reconstruction.",
+      "confusion_matrix": "Available only through visualization branch, also text-gated; absent for current reconstruction.",
+      "class_order_bug": "Test classification_report uses ['Pos','Neg','Neu'] at trainer/train_model.py:284, conflicting with canonical Positive=0, Neutral=1, Negative=2."
+    }
+  },
+  "gpu_readiness": {
+    "parameter_count": 16346372,
+    "float32_weights_mib": 62.36,
+    "weights_gradients_adamw_states_mib_estimate": 249.43,
+    "batch_size": 16,
+    "principal_activations": [
+      "local input [16,8,32,768] is about 12 MiB float32",
+      "latent local tensors [16,8,32,512] are about 8 MiB each and several coexist during forward/backward",
+      "visual tokens [16,256,512] are about 8 MiB",
+      "self-attention score tensors and gradients across two layers are the likely activation hotspot"
+    ],
+    "recommendation": "24 GB GPU is the reasonable first class for batch size 16 in float32. Use memory monitoring on the first batch; 40/48 GB is contingency capacity, not a demonstrated requirement. H200 is not justified by this model's static memory footprint."
+  },
+  "blockers": [
+    "No deterministic, stratified train/validation/test manifest exists for the 407 reconstructed outputs.",
+    "The current trainer cannot discover the flat reconstruction corpus; its configured data root is absent and its legacy globs search train/*_vibe.h5 and val/*_vibe.h5.",
+    "No exact official paper GECV split is available, so paper-comparable evaluation must not be claimed.",
+    "No runnable reconstruction training config exists; config/reconstruction_gecv_v1.yaml lacks mandatory trainer fields and split-manifest selection.",
+    "Current scheduler/weight decay/warmup/dropout differ from the stated paper targets; text-off L_sat=0 is an intentional reconstruction deviation.",
+    "Evaluation reporting is incomplete for text-off reconstruction: macro F1/confusion matrix are absent, validation reporting is text-gated, and test class names use an incorrect Neutral/Negative order."
+  ],
+  "required_changes_before_gpu": [
+    "Add a deterministic, stratified, video-level reconstruction split-manifest reader; do not create or copy HDF5 files.",
+    "Generate and freeze the proposed split manifest after explicit approval, including smoke_only exclusions and corpus hash.",
+    "Add a complete train_gecv_reconstruction_v1.yaml pointing exclusively to the frozen manifest and setting approved reconstruction interface/loss options.",
+    "Resolve and explicitly implement the approved reconstruction training schedule: paper-target cosine annealing plus 3-epoch warmup and weight decay 1e-3, or label any alternative as a reconstruction deviation.",
+    "Make current dropout choices explicit/configurable or document their divergence from the stated paper target.",
+    "Repair text-off validation/test reporting: correct class order, log accuracy/macro-F1/weighted-F1, precision/recall/classwise metrics, and confusion matrix without requiring text anchors.",
+    "Ensure a best checkpoint is always saved before final test evaluation."
+  ],
+  "recommended_next_step": "Approve the proposed split protocol and the reconstruction training configuration decisions, then implement only the manifest-driven data split and text-off evaluation/checkpointing fixes; rerun a CPU train/validation/test integration gate before any GPU training."
+}

@@ -1,3 +1,10 @@
+"""Gamma- and scene-conditioned temporal transformer for VIBE-GECV.
+
+Input tokens are [B,T,L], where T=32 reconstruction time bins and L is the
+latent dimension. ``gamma`` is one synchrony scalar per sample [B,1,1], and
+``global_style`` is the scene-derived style token [B,style_dim].
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -5,6 +12,7 @@ from torchvision.ops import StochasticDepth
 import numpy as np
 
 class DecoupledAdaLN(nn.Module):
+    """Adaptive LayerNorm whose scale depends separately on scene and gamma."""
     def __init__(self, dim, style_dim):
         super().__init__()
         self.norm = nn.LayerNorm(dim, elementwise_affine=False)
@@ -19,6 +27,11 @@ class DecoupledAdaLN(nn.Module):
         nn.init.zeros_(self.style_proj[-1].bias)
 
     def forward(self, x, gamma, global_style):
+        """Condition [B,T,D] tokens without changing their shape.
+
+        A scalar gamma is expanded across T bins. The interpolation branch is
+        retained for compatible callers that supply a gamma sequence instead.
+        """
         # 1. Project Global Style
         style_params = self.style_proj(global_style) # [B, D*3]
         scale_base, shift_base, sync_sensitivity = style_params.chunk(3, dim=-1)
@@ -49,6 +62,7 @@ class DecoupledAdaLN(nn.Module):
         return self.norm(x) * (1 + dynamic_scale) + shift_base
 
 class GammaGatedTransformer(nn.Module):
+    """Apply masked self-attention and MLP blocks to [B,T,D] temporal tokens."""
     def __init__(self, dim, style_dim, depth=2, heads=8, mlp_dim=1024, dropout=0.1, drop_path=0.1):
         super().__init__()
         self.layers = nn.ModuleList([])
@@ -62,11 +76,19 @@ class GammaGatedTransformer(nn.Module):
                 nn.Sequential(nn.Linear(dim, mlp_dim), nn.GELU(), nn.Dropout(dropout), nn.Linear(mlp_dim, dim))
             ]))
             
-    def forward(self, x, gamma, global_style):
+    def forward(self, x, gamma, global_style, time_mask=None):
+        """Return [B,T,D] while preventing padded time positions from reviving.
+
+        ``time_mask`` is [B,T] with True for valid bins. It is used both as a
+        MultiheadAttention padding mask and after each residual block.
+        """
+        padding_mask = None if time_mask is None else ~time_mask.bool()
         for norm1, attn, norm2, mlp in self.layers:
             x_norm = norm1(x, gamma, global_style)
-            attn_out, _ = attn(x_norm, x_norm, x_norm)
+            attn_out, _ = attn(x_norm, x_norm, x_norm, key_padding_mask=padding_mask)
             x = x + self.drop_path(attn_out)
             x_norm = norm2(x, gamma, global_style)
             x = x + self.drop_path(mlp(x_norm))
+            if time_mask is not None:
+                x = x * time_mask.unsqueeze(-1).to(x.dtype)
         return x
